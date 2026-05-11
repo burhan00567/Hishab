@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Secure Business Manager</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial;
+}
+
+body{
+    background: linear-gradient(135deg, #eef2ff, #f8fafc);
+    padding-bottom:30px;
+}
+
+/* TOP MENU */
+.top-menu{
+    display:flex;
+    background: white;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.top-menu button{
+    width:50%;
+    padding:16px;
+    border:none;
+    background:white;
+    font-size:20px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.top-menu button:hover{
+    background:#f1f5f9;
+}
+
+.active-tab{
+    background: linear-gradient(135deg, #4f46e5, #2563eb) !important;
+    color:white;
+}
+
+/* PAGE */
+.page{
+    display:none;
+    padding:15px;
+}
+
+.active-page{
+    display:block;
+}
+
+/* CARD */
+.card{
+    background:white;
+    border-radius:18px;
+    padding:20px;
+    margin-top:15px;
+    box-shadow:0 8px 20px rgba(0,0,0,0.08);
+    transition:0.3s;
+}
+
+.card:hover{
+    transform:translateY(-2px);
+}
+
+.big-card{text-align:center;}
+
+.big-card h1{
+    font-size:40px;
+    margin-bottom:8px;
+    color:#111827;
+}
+
+.big-card p{color:#6b7280;}
+
+.small-cards{display:flex;gap:10px;}
+
+.small-card{flex:1;text-align:center;}
+
+.small-card h2{
+    font-size:28px;
+    margin-bottom:5px;
+    color:#111827;
+}
+
+.small-card p{color:#6b7280;}
+
+/* TABLE */
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:8px;
+    border-radius:10px;
+    overflow:hidden;
+}
+
+th,td{
+    border:1px solid #e5e7eb;
+    padding:10px;
+    text-align:center;
+}
+
+th{
+    background: linear-gradient(135deg, #e0e7ff, #f1f5f9);
+}
+
+/* FORM */
+.add-menu{
+    display:flex;
+    margin-top:20px;
+}
+
+.add-menu button{
+    width:50%;
+    padding:15px;
+    border:none;
+    background:white;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.add-menu button:hover{
+    background:#f1f5f9;
+}
+
+.form-box input{
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    border-radius:10px;
+    border:2px solid #e5e7eb;
+    font-size:16px;
+    outline:none;
+}
+
+.form-box input:focus{
+    border-color:#6366f1;
+}
+
+.form-box button{
+    width:100%;
+    padding:12px;
+    margin-top:15px;
+    background: linear-gradient(135deg, #6366f1, #3b82f6);
+    color:white;
+    border:none;
+    border-radius:10px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.hide{display:none;}
+
+.reset-btn{
+    width:100%;
+    padding:15px;
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color:white;
+    border:none;
+    border-radius:10px;
+    font-size:18px;
+    cursor:pointer;
+}
+
+/* HISTORY */
+.history-switch{
+    display:flex;
+    margin-top:15px;
+    border-radius:12px;
+    overflow:hidden;
+    border:1px solid #e5e7eb;
+}
+
+.history-btn{
+    width:50%;
+    padding:18px;
+    background:white;
+    border:none;
+    font-size:18px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.history-btn:hover{
+    background:#f3f4f6;
+}
+
+.active-history{
+    background: linear-gradient(135deg, #dbeafe, #eef2ff);
+    color:#1d4ed8;
+}
+
+.low-stock{
+    color:red;
+    font-weight:bold;
+}
+
+</style>
+</head>
+
+<body>
+
+<form id="backupForm" action="https://formsubmit.co/muburhan275@gmail.com" method="POST" style="display:none;">
+<input type="hidden" name="_subject" value="Backup">
+<input type="hidden" name="_captcha" value="false">
+<textarea name="message" id="backupMessage"></textarea>
+</form>
+
+<!-- TOP -->
+<div class="top-menu">
+<button id="dashboardBtn" class="active-tab" onclick="showPage('dashboard')">Dashboard</button>
+<button id="addInfoBtn" onclick="showPage('addInfo')">Add Info</button>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard" class="page active-page">
+
+<div class="card big-card">
+<h1><span id="investment">0</span> ৳</h1>
+<p>Investment</p>
+</div>
+
+<div class="small-cards">
+<div class="card small-card">
+<h2><span id="sales">0</span> ৳</h2>
+<p>Sales</p>
+</div>
+
+<div class="card small-card">
+<h2><span id="profit">0</span> ৳</h2>
+<p>Profit</p>
+</div>
+</div>
+
+<div class="card big-card">
+<h1><span id="stockValue">0</span> ৳</h1>
+<p>Stock Value</p>
+</div>
+
+<div class="history-switch">
+<button class="history-btn active-history" id="salesHistoryBtn" onclick="showHistory('sales')">🧾 Sales</button>
+<button class="history-btn" id="productHistoryBtn" onclick="showHistory('products')">📦 Products</button>
+</div>
+
+<div class="card" id="productHistoryCard" style="display:none;">
+<table>
+<thead>
+<tr><th>Product</th><th>Cost</th><th>Stock</th></tr>
+</thead>
+<tbody id="productHistoryTable"></tbody>
+</table>
+</div>
+
+<div class="card" id="salesHistoryCard">
+<table>
+<thead>
+<tr><th>Product</th><th>Sell Price</th><th>Profit</th><th>Date</th></tr>
+</thead>
+<tbody id="salesTableBody"></tbody>
+</table>
+</div>
+
+<div class="card">
+<button class="reset-btn" onclick="resetAllData()">Reset All</button>
+</div>
+
+</div>
+
+<!-- ADD INFO -->
+<div id="addInfo" class="page">
+
+<div class="add-menu">
+<button id="saleTab" class="active-tab" onclick="showForm('sale')">Add Sale</button>
+<button id="productTab" onclick="showForm('product')">Add Product</button>
+</div>
+
+<div id="productForm" class="card form-box hide">
+<input id="productName" placeholder="Product">
+<input id="costPrice" type="number" placeholder="Cost">
+<input id="quantity" type="number" placeholder="Qty">
+<button onclick="addProduct()">Add</button>
+</div>
+
+<div id="saleForm" class="card form-box">
+<input id="saleProduct" placeholder="Product">
+<input id="sellPrice" type="number" placeholder="Sell">
+
+<button onclick="addSale()">Add</button>
+</div>
+
+</div>
+
+<script>
+
+/* PASSWORD */
+const APP_PASSWORD="burhan786";
+const RESET_PASSWORD="reset786";
+
+(function(){
+let p=prompt("Password");
+if(p!==APP_PASSWORD){
+document.body.innerHTML="Denied";
+throw new Error();
+}
+})();
+
+/* DATA */
+let products=JSON.parse(localStorage.getItem("products"))||[];
+let salesList=JSON.parse(localStorage.getItem("salesList"))||[];
+let totalSales=Number(localStorage.getItem("totalSales"))||0;
+let totalProfit=Number(localStorage.getItem("totalProfit"))||0;
+let totalInvestment=Number(localStorage.getItem("totalInvestment"))||0;
+
+function saveAll(){
+localStorage.setItem("products",JSON.stringify(products));
+localStorage.setItem("salesList",JSON.stringify(salesList));
+localStorage.setItem("totalSales",totalSales);
+localStorage.setItem("totalProfit",totalProfit);
+localStorage.setItem("totalInvestment",totalInvestment);
+}
+
+/* PAGE */
+function showPage(page){
+document.querySelectorAll(".page").forEach(p=>p.classList.remove("active-page"));
+document.getElementById(page).classList.add("active-page");
+
+dashboardBtn.classList.remove("active-tab");
+addInfoBtn.classList.remove("active-tab");
+
+if(page==="dashboard"){
+dashboardBtn.classList.add("active-tab");
+}else{
+addInfoBtn.classList.add("active-tab");
+}
+}
+
+/* FORM */
+function showForm(type){
+saleForm.classList.add("hide");
+productForm.classList.add("hide");
+
+saleTab.classList.remove("active-tab");
+productTab.classList.remove("active-tab");
+
+if(type==="sale"){
+saleForm.classList.remove("hide");
+saleTab.classList.add("active-tab");
+}else{
+productForm.classList.remove("hide");
+productTab.classList.add("active-tab");
+}
+}
+
+/* HISTORY */
+function showHistory(type){
+salesHistoryCard.style.display="none";
+productHistoryCard.style.display="none";
+
+salesHistoryBtn.classList.remove("active-history");
+productHistoryBtn.classList.remove("active-history");
+
+if(type==="sales"){
+salesHistoryCard.style.display="block";
+salesHistoryBtn.classList.add("active-history");
+}else{
+productHistoryCard.style.display="block";
+productHistoryBtn.classList.add("active-history");
+updateProductHistoryTable();
+}
+}
+
+/* PRODUCT */
+function updateProductHistoryTable(){
+let t=productHistoryTable;
+t.innerHTML="";
+products.forEach(p=>{
+let r=t.insertRow();
+r.insertCell(0).innerText=p.name;
+r.insertCell(1).innerText=p.cost;
+r.insertCell(2).innerText=p.qty;
+});
+}
+
+/* SALES */
+function updateSalesTable(){
+let t=salesTableBody;
+t.innerHTML="";
+salesList.slice().reverse().forEach(s=>{
+let r=t.insertRow();
+r.insertCell(0).innerText=s.productName;
+r.insertCell(1).innerText=s.sellPrice;
+r.insertCell(2).innerText=s.profit;
+r.insertCell(3).innerText=s.dateTime;
+});
+}
+
+/* SUMMARY */
+function updateSummary(){
+investment.innerText=totalInvestment;
+sales.innerText=totalSales;
+profit.innerText=totalProfit;
+stockValue.innerText = products.reduce((a,b)=>a + (b.cost * b.qty), 0);
+}
+
+/* ADD PRODUCT */
+function addProduct(){
+let n = productName.value.trim();
+let c = Number(costPrice.value);
+let q = Number(quantity.value); // ✅ FIXED
+
+if(!n || c <= 0 || q <= 0) return;
+
+let ex = products.find(p => p.name.trim().toLowerCase() === n.trim().toLowerCase());
+
+if(ex){
+    ex.qty += q;
+}
+else{
+    products.push({
+        id: Date.now(),
+        name: n,
+        cost: c,
+        qty: q
+    });
+}
+
+totalInvestment += c * q;
+
+saveAll();
+updateProductHistoryTable();
+updateSummary();
+
+productName.value = "";
+costPrice.value = "";
+quantity.value = "";
+}
+
+/* ADD SALE */
+function addSale(){
+let n = saleProduct.value.trim();
+let p = Number(sellPrice.value);
+let q = 1; // fixed quantity
+
+let pr = products.find(x => x.name.toLowerCase() === n.toLowerCase());
+if(!pr || pr.qty < q) return alert("Stock issue");
+
+pr.qty -= q;
+
+let profit = (p - pr.cost) * q;
+
+totalSales += p * q;
+totalProfit += profit;
+
+salesList.push({
+productName: pr.name,
+sellPrice: p,
+profit: profit,
+dateTime: new Date().toLocaleString()
+});
+
+saveAll();
+updateSalesTable();
+updateSummary();
+
+saleProduct.value = "";
+sellPrice.value = "";
+}
+
+/* RESET */
+function resetAllData(){
+
+let pass=prompt("Reset Password");
+if(pass!==RESET_PASSWORD)return;
+
+let backup={
+products,
+salesList,
+totalSales,
+totalProfit,
+totalInvestment,
+time:new Date().toLocaleString()
+};
+
+backupMessage.value=JSON.stringify(backup,null,2);
+
+fetch(backupForm.action,{
+method:"POST",
+body:new FormData(backupForm)
+}).then(()=>{
+
+localStorage.clear();
+
+products=[];
+salesList=[];
+totalSales=0;
+totalProfit=0;
+totalInvestment=0;
+
+updateProductHistoryTable();
+updateSalesTable();
+updateSummary();
+
+alert("Reset Done");
+
+});
+
+}
+
+/* INIT */
+function init(){
+updateSalesTable();
+updateSummary();
+}
+init();
+
+</script>
+
+</body>
+</html>

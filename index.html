@@ -333,7 +333,7 @@ th{
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, query, where, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, query, where, updateDoc, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 // 🔴 আপনার Firebase Config
 const firebaseConfig = {
@@ -563,12 +563,17 @@ window.addSale = async function(){
   }
 };
 
-// ====== RESET ======
 window.resetAllData = async function(){
   let pass = prompt("Reset Password");
   if(pass !== RESET_PASSWORD) return;
 
   try {
+    const prodSnap = await getDocs(collection(db, "products"));
+    prodSnap.forEach(d => deleteDoc(d.ref));
+
+    const salesSnap = await getDocs(collection(db, "sales"));
+    salesSnap.forEach(d => deleteDoc(d.ref));
+
     products = [];
     salesList = [];
     totalSales = 0;
@@ -579,7 +584,7 @@ window.resetAllData = async function(){
     updateSalesTable();
     updateSummary();
 
-    alert("✅ Reset Done - Local data cleared");
+    alert("✅ Full Reset Done (Firebase + Local)");
   } catch(error){
     alert("❌ Error: " + error.message);
   }

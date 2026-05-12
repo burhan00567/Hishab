@@ -204,6 +204,35 @@ th{
     font-weight:bold;
 }
 
+/* Status Messages */
+.status-msg{
+    padding:10px;
+    margin-top:10px;
+    border-radius:8px;
+    text-align:center;
+    font-size:14px;
+    display:none;
+}
+
+.status-msg.show{
+    display:block;
+}
+
+.status-success{
+    background:#dcfce7;
+    color:#166534;
+}
+
+.status-error{
+    background:#fee2e2;
+    color:#991b1b;
+}
+
+.status-loading{
+    background:#dbeafe;
+    color:#1d4ed8;
+}
+
 </style>
 </head>
 
@@ -288,238 +317,324 @@ th{
 <input id="costPrice" type="number" placeholder="Cost">
 <input id="quantity" type="number" placeholder="Qty">
 <button onclick="addProduct()">Add</button>
+<div id="productStatus" class="status-msg"></div>
 </div>
 
 <div id="saleForm" class="card form-box">
 <input id="saleProduct" placeholder="Product">
 <input id="sellPrice" type="number" placeholder="Sell">
-
 <button onclick="addSale()">Add</button>
+<div id="saleStatus" class="status-msg"></div>
 </div>
 
 </div>
 
-<script>
+<!-- ====== FIREBASE SETUP ====== -->
+<script type="module">
 
-/* PASSWORD */
-const APP_PASSWORD="burhan786";
-const RESET_PASSWORD="reset786";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, query, where, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+// 🔴 আপনার Firebase Config
+const firebaseConfig = {
+  apiKey: "AIzaSyDf0sOqWode1Jsay_ar6MyVWdW1HRVrWV8",
+  authDomain: "hishab-app-7deb3.firebaseapp.com",
+  projectId: "hishab-app-7deb3"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// ====== GLOBAL VARIABLES ======
+let products = [];
+let salesList = [];
+let totalSales = 0;
+let totalProfit = 0;
+let totalInvestment = 0;
+
+// PASSWORD
+const APP_PASSWORD = "burhan786";
+const RESET_PASSWORD = "reset786";
 
 (function(){
-let p=prompt("Password");
-if(p!==APP_PASSWORD){
-document.body.innerHTML="Denied";
-throw new Error();
-}
+  let p = prompt("Password");
+  if(p !== APP_PASSWORD){
+    document.body.innerHTML = "Denied";
+    throw new Error();
+  }
 })();
 
-/* DATA */
-let products=JSON.parse(localStorage.getItem("products"))||[];
-let salesList=JSON.parse(localStorage.getItem("salesList"))||[];
-let totalSales=Number(localStorage.getItem("totalSales"))||0;
-let totalProfit=Number(localStorage.getItem("totalProfit"))||0;
-let totalInvestment=Number(localStorage.getItem("totalInvestment"))||0;
+// ====== PAGE NAVIGATION ======
+window.showPage = function(page){
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active-page"));
+  document.getElementById(page).classList.add("active-page");
 
-function saveAll(){
-localStorage.setItem("products",JSON.stringify(products));
-localStorage.setItem("salesList",JSON.stringify(salesList));
-localStorage.setItem("totalSales",totalSales);
-localStorage.setItem("totalProfit",totalProfit);
-localStorage.setItem("totalInvestment",totalInvestment);
+  dashboardBtn.classList.remove("active-tab");
+  addInfoBtn.classList.remove("active-tab");
+
+  if(page === "dashboard"){
+    dashboardBtn.classList.add("active-tab");
+  } else {
+    addInfoBtn.classList.add("active-tab");
+  }
 }
 
-/* PAGE */
-function showPage(page){
-document.querySelectorAll(".page").forEach(p=>p.classList.remove("active-page"));
-document.getElementById(page).classList.add("active-page");
+// ====== FORM NAVIGATION ======
+window.showForm = function(type){
+  saleForm.classList.add("hide");
+  productForm.classList.add("hide");
 
-dashboardBtn.classList.remove("active-tab");
-addInfoBtn.classList.remove("active-tab");
+  saleTab.classList.remove("active-tab");
+  productTab.classList.remove("active-tab");
 
-if(page==="dashboard"){
-dashboardBtn.classList.add("active-tab");
-}else{
-addInfoBtn.classList.add("active-tab");
-}
-}
-
-/* FORM */
-function showForm(type){
-saleForm.classList.add("hide");
-productForm.classList.add("hide");
-
-saleTab.classList.remove("active-tab");
-productTab.classList.remove("active-tab");
-
-if(type==="sale"){
-saleForm.classList.remove("hide");
-saleTab.classList.add("active-tab");
-}else{
-productForm.classList.remove("hide");
-productTab.classList.add("active-tab");
-}
+  if(type === "sale"){
+    saleForm.classList.remove("hide");
+    saleTab.classList.add("active-tab");
+  } else {
+    productForm.classList.remove("hide");
+    productTab.classList.add("active-tab");
+  }
 }
 
-/* HISTORY */
-function showHistory(type){
-salesHistoryCard.style.display="none";
-productHistoryCard.style.display="none";
+// ====== HISTORY ======
+window.showHistory = function(type){
+  salesHistoryCard.style.display = "none";
+  productHistoryCard.style.display = "none";
 
-salesHistoryBtn.classList.remove("active-history");
-productHistoryBtn.classList.remove("active-history");
+  salesHistoryBtn.classList.remove("active-history");
+  productHistoryBtn.classList.remove("active-history");
 
-if(type==="sales"){
-salesHistoryCard.style.display="block";
-salesHistoryBtn.classList.add("active-history");
-}else{
-productHistoryCard.style.display="block";
-productHistoryBtn.classList.add("active-history");
-updateProductHistoryTable();
+  if(type === "sales"){
+    salesHistoryCard.style.display = "block";
+    salesHistoryBtn.classList.add("active-history");
+  } else {
+    productHistoryCard.style.display = "block";
+    productHistoryBtn.classList.add("active-history");
+    updateProductHistoryTable();
+  }
 }
-}
 
-/* PRODUCT */
+// ====== UPDATE PRODUCT TABLE ======
 function updateProductHistoryTable(){
-let t=productHistoryTable;
-t.innerHTML="";
-products.forEach(p=>{
-let r=t.insertRow();
-r.insertCell(0).innerText=p.name;
-r.insertCell(1).innerText=p.cost;
-r.insertCell(2).innerText=p.qty;
-});
+  let t = productHistoryTable;
+  t.innerHTML = "";
+  products.forEach(p => {
+    let r = t.insertRow();
+    r.insertCell(0).innerText = p.name;
+    r.insertCell(1).innerText = p.cost;
+    r.insertCell(2).innerText = p.qty;
+  });
 }
 
-/* SALES */
+// ====== UPDATE SALES TABLE ======
 function updateSalesTable(){
-let t=salesTableBody;
-t.innerHTML="";
-salesList.slice().reverse().forEach(s=>{
-let r=t.insertRow();
-r.insertCell(0).innerText=s.productName;
-r.insertCell(1).innerText=s.sellPrice;
-r.insertCell(2).innerText=s.profit;
-r.insertCell(3).innerText=s.dateTime;
-});
+  let t = salesTableBody;
+  t.innerHTML = "";
+  salesList.slice().reverse().forEach(s => {
+    let r = t.insertRow();
+    r.insertCell(0).innerText = s.productName;
+    r.insertCell(1).innerText = s.sellPrice;
+    r.insertCell(2).innerText = s.profit;
+    r.insertCell(3).innerText = s.dateTime;
+  });
 }
 
-/* SUMMARY */
+// ====== UPDATE SUMMARY ======
 function updateSummary(){
-investment.innerText=totalInvestment;
-sales.innerText=totalSales;
-profit.innerText=totalProfit;
-stockValue.innerText = products.reduce((a,b)=>a + (b.cost * b.qty), 0);
+  investment.innerText = totalInvestment;
+  sales.innerText = totalSales;
+  profit.innerText = totalProfit;
+  stockValue.innerText = products.reduce((a,b) => a + (b.cost * b.qty), 0);
 }
 
-/* ADD PRODUCT */
-function addProduct(){
-let n = productName.value.trim();
-let c = Number(costPrice.value);
-let q = Number(quantity.value); // ✅ FIXED
-
-if(!n || c <= 0 || q <= 0) return;
-
-let ex = products.find(p => p.name.trim().toLowerCase() === n.trim().toLowerCase());
-
-if(ex){
-    ex.qty += q;
+// ====== STATUS MESSAGE ======
+function showStatus(elementId, message, type){
+  const statusEl = document.getElementById(elementId);
+  statusEl.innerText = message;
+  statusEl.className = "status-msg show status-" + type;
+  
+  if(type !== "loading"){
+    setTimeout(() => {
+      statusEl.innerText = "";
+      statusEl.className = "status-msg";
+    }, 3000);
+  }
 }
-else{
-    products.push({
+
+// ====== ADD PRODUCT (FIREBASE) ======
+window.addProduct = async function(){
+  let n = productName.value.trim();
+  let c = Number(costPrice.value);
+  let q = Number(quantity.value);
+
+  if(!n || c <= 0 || q <= 0) {
+    showStatus("productStatus", "❌ Invalid input", "error");
+    return;
+  }
+
+  try {
+    showStatus("productStatus", "⏳ Saving...", "loading");
+
+    // Firebase এ save করা
+    await addDoc(collection(db, "products"), {
+      name: n,
+      cost: c,
+      qty: q,
+      createdAt: new Date().toLocaleString()
+    });
+
+    // Local array update
+    let ex = products.find(p => p.name.toLowerCase() === n.toLowerCase());
+    if(ex){
+      ex.qty += q;
+    } else {
+      products.push({
         id: Date.now(),
         name: n,
         cost: c,
         qty: q
-    });
-}
+      });
+    }
 
-totalInvestment += c * q;
+    totalInvestment += c * q;
 
-saveAll();
-updateProductHistoryTable();
-updateSummary();
+    updateProductHistoryTable();
+    updateSummary();
 
-productName.value = "";
-costPrice.value = "";
-quantity.value = "";
-}
+    productName.value = "";
+    costPrice.value = "";
+    quantity.value = "";
 
-/* ADD SALE */
-function addSale(){
-let n = saleProduct.value.trim();
-let p = Number(sellPrice.value);
-let q = 1; // fixed quantity
-
-let pr = products.find(x => x.name.toLowerCase() === n.toLowerCase());
-if(!pr || pr.qty < q) return alert("Stock issue");
-
-pr.qty -= q;
-
-let profit = (p - pr.cost) * q;
-
-totalSales += p * q;
-totalProfit += profit;
-
-salesList.push({
-productName: pr.name,
-sellPrice: p,
-profit: profit,
-dateTime: new Date().toLocaleString()
-});
-
-saveAll();
-updateSalesTable();
-updateSummary();
-
-saleProduct.value = "";
-sellPrice.value = "";
-}
-
-/* RESET */
-function resetAllData(){
-
-let pass=prompt("Reset Password");
-if(pass!==RESET_PASSWORD)return;
-
-let backup={
-products,
-salesList,
-totalSales,
-totalProfit,
-totalInvestment,
-time:new Date().toLocaleString()
+    showStatus("productStatus", "✅ Product saved online!", "success");
+  } catch(error){
+    showStatus("productStatus", "❌ Error: " + error.message, "error");
+  }
 };
 
-backupMessage.value=JSON.stringify(backup,null,2);
+// ====== ADD SALE (FIREBASE) ======
+window.addSale = async function(){
+  let n = saleProduct.value.trim();
+  let p = Number(sellPrice.value);
+  let q = 1;
 
-fetch(backupForm.action,{
-method:"POST",
-body:new FormData(backupForm)
-}).then(()=>{
+  let pr = products.find(x => x.name.toLowerCase() === n.toLowerCase());
+  if(!pr || pr.qty < q) {
+    showStatus("saleStatus", "❌ Stock issue", "error");
+    return;
+  }
 
-localStorage.clear();
+  try {
+    showStatus("saleStatus", "⏳ Saving...", "loading");
 
-products=[];
-salesList=[];
-totalSales=0;
-totalProfit=0;
-totalInvestment=0;
+    let profitAmount = (p - pr.cost) * q;
 
-updateProductHistoryTable();
-updateSalesTable();
-updateSummary();
+    // Firebase এ save করা
+    await addDoc(collection(db, "sales"), {
+      productName: pr.name,
+      sellPrice: p,
+      profit: profitAmount,
+      dateTime: new Date().toLocaleString()
+    });
 
-alert("Reset Done");
+    // Local update
+    pr.qty -= q;
+    totalSales += p * q;
+    totalProfit += profitAmount;
 
-});
+    salesList.push({
+      productName: pr.name,
+      sellPrice: p,
+      profit: profitAmount,
+      dateTime: new Date().toLocaleString()
+    });
 
+    updateSalesTable();
+    updateSummary();
+
+    saleProduct.value = "";
+    sellPrice.value = "";
+
+    showStatus("saleStatus", "✅ Sale saved online!", "success");
+  } catch(error){
+    showStatus("saleStatus", "❌ Error: " + error.message, "error");
+  }
+};
+
+// ====== RESET ======
+window.resetAllData = async function(){
+  let pass = prompt("Reset Password");
+  if(pass !== RESET_PASSWORD) return;
+
+  try {
+    products = [];
+    salesList = [];
+    totalSales = 0;
+    totalProfit = 0;
+    totalInvestment = 0;
+
+    updateProductHistoryTable();
+    updateSalesTable();
+    updateSummary();
+
+    alert("✅ Reset Done - Local data cleared");
+  } catch(error){
+    alert("❌ Error: " + error.message);
+  }
+};
+
+// ====== LOAD DATA FROM FIREBASE ======
+async function loadDataFromFirebase(){
+  try {
+    // Load Products
+    const productsSnapshot = await getDocs(collection(db, "products"));
+    products = [];
+    totalInvestment = 0;
+
+    productsSnapshot.forEach((doc) => {
+      const data = doc.data();
+      products.push({
+        id: doc.id,
+        name: data.name,
+        cost: data.cost,
+        qty: data.qty
+      });
+      totalInvestment += data.cost * data.qty;
+    });
+
+    // Load Sales
+    const salesSnapshot = await getDocs(collection(db, "sales"));
+    salesList = [];
+    totalSales = 0;
+    totalProfit = 0;
+
+    salesSnapshot.forEach((doc) => {
+      const data = doc.data();
+      salesList.push({
+        id: doc.id,
+        productName: data.productName,
+        sellPrice: data.sellPrice,
+        profit: data.profit,
+        dateTime: data.dateTime
+      });
+      totalSales += data.sellPrice;
+      totalProfit += data.profit;
+    });
+
+    updateSalesTable();
+    updateSummary();
+    console.log("✅ Data loaded from Firebase");
+  } catch(error){
+    console.error("❌ Error loading data:", error);
+  }
 }
 
-/* INIT */
-function init(){
-updateSalesTable();
-updateSummary();
-}
+// ====== INIT ======
+window.init = async function(){
+  await loadDataFromFirebase();
+  updateSalesTable();
+  updateSummary();
+};
+
 init();
 
 </script>

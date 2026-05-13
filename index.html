@@ -371,10 +371,162 @@ th{
     color:#1d4ed8;
 }
 
+/* DARK MODE */
+body.dark-mode {
+    background: linear-gradient(135deg, #1f2937, #111827);
+    color: #e5e7eb;
+}
+
+body.dark-mode .card {
+    background: #1f2937;
+    color: #e5e7eb;
+}
+
+body.dark-mode .top-menu {
+    background: #111827;
+    border-bottom-color: #374151;
+}
+
+body.dark-mode .top-menu button {
+    background: #111827;
+    color: #e5e7eb;
+}
+
+body.dark-mode .top-menu button:hover {
+    background: #374151;
+}
+
+body.dark-mode .big-card h1 {
+    color: #e5e7eb;
+}
+
+body.dark-mode .big-card p,
+body.dark-mode .small-card p {
+    color: #9ca3af;
+}
+
+body.dark-mode .small-card h2 {
+    color: #e5e7eb;
+}
+
+body.dark-mode table {
+    background: #1f2937;
+}
+
+body.dark-mode th {
+    background: #374151;
+    color: #e5e7eb;
+}
+
+body.dark-mode th,
+body.dark-mode td {
+    border-color: #374151;
+    color: #e5e7eb;
+}
+
+body.dark-mode .form-box input {
+    background: #374151;
+    border-color: #4b5563;
+    color: #e5e7eb;
+}
+
+body.dark-mode .form-box input:focus {
+    border-color: #6366f1;
+}
+
+body.dark-mode .history-switch {
+    border-color: #374151;
+    background: #111827;
+}
+
+body.dark-mode .history-btn {
+    background: #111827;
+    color: #e5e7eb;
+}
+
+body.dark-mode .history-btn:hover {
+    background: #374151;
+}
+
+body.dark-mode .active-history {
+    background: #374151;
+    color: #93c5fd;
+}
+
+body.dark-mode .modal {
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+body.dark-mode .modal-content {
+    background: #1f2937;
+    color: #e5e7eb;
+}
+
+body.dark-mode .modal-header {
+    color: #e5e7eb;
+}
+
+body.dark-mode .modal-body input {
+    background: #374151;
+    border-color: #4b5563;
+    color: #e5e7eb;
+}
+
+body.dark-mode .modal-body input:focus {
+    border-color: #6366f1;
+}
+
+body.dark-mode .modal-cancel {
+    background: #374151;
+    color: #e5e7eb;
+}
+
+body.dark-mode .modal-cancel:hover {
+    background: #4b5563;
+}
+
+body.dark-mode .add-menu button {
+    background: #111827;
+    color: #e5e7eb;
+}
+
+body.dark-mode .add-menu button:hover {
+    background: #374151;
+}
+
+/* DARK MODE TOGGLE BUTTON */
+.dark-mode-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 999;
+    padding: 10px 15px;
+    background: linear-gradient(135deg, #6366f1, #3b82f6);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-size: 18px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: 0.3s;
+}
+
+.dark-mode-toggle:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+}
+
+body.dark-mode .dark-mode-toggle {
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+}
+
 </style>
 </head>
 
 <body>
+
+<!-- DARK MODE TOGGLE BUTTON -->
+<button class="dark-mode-toggle" onclick="toggleDarkMode()" title="Toggle Dark Mode">🌙</button>
 
 <form id="backupForm" action="https://formsubmit.co/muburhan275@gmail.com" method="POST" style="display:none;">
 <input type="hidden" name="_subject" value="Backup">
@@ -382,7 +534,7 @@ th{
 <textarea name="message" id="backupMessage"></textarea>
 </form>
 
-<!-- EDIT MODAL -->
+<!-- EDIT SALE MODAL -->
 <div id="editModal" class="modal">
   <div class="modal-content">
     <div class="modal-header">✏️ Edit Sale</div>
@@ -394,6 +546,22 @@ th{
     <div class="modal-footer">
       <button class="modal-cancel" onclick="closeEditModal()">Cancel</button>
       <button class="modal-save" onclick="saveSaleChanges()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT PRODUCT MODAL -->
+<div id="editProductModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">✏️ Edit Product</div>
+    <div class="modal-body">
+      <input id="editProductName" type="text" placeholder="Product Name">
+      <input id="editProductCost" type="number" placeholder="Cost Price">
+      <input id="editProductQty" type="number" placeholder="Quantity">
+    </div>
+    <div class="modal-footer">
+      <button class="modal-cancel" onclick="closeEditProductModal()">Cancel</button>
+      <button class="modal-save" onclick="saveProductChanges()">Save</button>
     </div>
   </div>
 </div>
@@ -439,7 +607,7 @@ th{
 <div class="table-container-no-scroll">
 <table>
 <thead>
-<tr><th>Product</th><th>Cost</th><th>Stock</th></tr>
+<tr><th>Product</th><th>Cost</th><th>Stock</th><th>Action</th></tr>
 </thead>
 <tbody id="productHistoryTable"></tbody>
 </table>
@@ -519,6 +687,30 @@ let totalInvestment = 0;
 // RESET PASSWORD ONLY
 const RESET_PASSWORD = "reset786";
 
+// ====== DARK MODE TOGGLE ======
+window.toggleDarkMode = function(){
+  let body = document.body;
+  body.classList.toggle("dark-mode");
+  
+  // Local Storage এ সংরক্ষণ করা
+  if(body.classList.contains("dark-mode")){
+    localStorage.setItem("darkMode", "enabled");
+    document.querySelector(".dark-mode-toggle").textContent = "☀️";
+  } else {
+    localStorage.setItem("darkMode", "disabled");
+    document.querySelector(".dark-mode-toggle").textContent = "🌙";
+  }
+};
+
+// ====== LOAD DARK MODE PREFERENCE ======
+window.loadDarkModePreference = function(){
+  let darkModeStatus = localStorage.getItem("darkMode");
+  if(darkModeStatus === "enabled"){
+    document.body.classList.add("dark-mode");
+    document.querySelector(".dark-mode-toggle").textContent = "☀️";
+  }
+};
+
 // ====== PAGE NAVIGATION ======
 window.showPage = function(page){
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active-page"));
@@ -568,6 +760,83 @@ window.showHistory = function(type){
     updateProductHistoryTable();
   }
 }
+
+// ====== EDIT PRODUCT ======
+let currentEditProduct = null;
+
+window.editProduct = function(product, index){
+  currentEditProduct = product;
+  
+  document.getElementById("editProductName").value = product.name;
+  document.getElementById("editProductCost").value = product.cost;
+  document.getElementById("editProductQty").value = product.qty;
+  
+  document.getElementById("editProductModal").classList.add("show");
+};
+
+// ====== CLOSE PRODUCT MODAL ======
+window.closeEditProductModal = function(){
+  document.getElementById("editProductModal").classList.remove("show");
+  currentEditProduct = null;
+};
+
+// ====== SAVE PRODUCT CHANGES ======
+window.saveProductChanges = async function(){
+  if(!currentEditProduct) return;
+
+  let newName = document.getElementById("editProductName").value.trim();
+  let newCost = Number(document.getElementById("editProductCost").value);
+  let newQty = Number(document.getElementById("editProductQty").value);
+
+  if(!newName || newCost <= 0 || newQty <= 0) {
+    alert("❌ Please fill all fields correctly");
+    return;
+  }
+
+  try {
+    // Firebase এ প্রোডাক্ট আপডেট করা
+    const productQuery = query(collection(db, "products"), where("name", "==", currentEditProduct.name));
+    const productSnap = await getDocs(productQuery);
+    
+    productSnap.forEach(async (docSnap) => {
+      // নতুন investedAmount ক্যালকুলেট করা
+      let quantityDiff = newQty - currentEditProduct.qty;
+      let costDiff = newCost - currentEditProduct.cost;
+      let oldInvestment = currentEditProduct.investedAmount || (currentEditProduct.cost * currentEditProduct.qty);
+      let newInvestment = oldInvestment + (costDiff * newQty) + (currentEditProduct.cost * quantityDiff);
+
+      await updateDoc(doc(db, "products", docSnap.id), {
+        name: newName,
+        cost: newCost,
+        qty: newQty,
+        investedAmount: newInvestment
+      });
+    });
+
+    // Investment আপডেট করা
+    let oldInvestment = currentEditProduct.investedAmount || (currentEditProduct.cost * currentEditProduct.qty);
+    let quantityDiff = newQty - currentEditProduct.qty;
+    let costDiff = newCost - currentEditProduct.cost;
+    let newInvestment = oldInvestment + (costDiff * newQty) + (currentEditProduct.cost * quantityDiff);
+    
+    totalInvestment -= oldInvestment;
+    totalInvestment += newInvestment;
+
+    // লোকাল ডেটা আপডেট করা
+    currentEditProduct.name = newName;
+    currentEditProduct.cost = newCost;
+    currentEditProduct.qty = newQty;
+    currentEditProduct.investedAmount = newInvestment;
+
+    updateProductHistoryTable();
+    updateSummary();
+
+    closeEditProductModal();
+    alert("✅ Product updated successfully!");
+  } catch(error){
+    alert("❌ Error: " + error.message);
+  }
+};
 
 // ====== GLOBAL EDIT VARIABLE ======
 let currentEditSale = null;
@@ -660,11 +929,20 @@ window.saveSaleChanges = async function(){
 function updateProductHistoryTable(){
   let t = productHistoryTable;
   t.innerHTML = "";
-  products.forEach(p => {
+  products.forEach((p, index) => {
     let r = t.insertRow();
     r.insertCell(0).innerText = p.name;
     r.insertCell(1).innerText = p.cost;
     r.insertCell(2).innerText = p.qty;
+    
+    // Edit বাটন
+    let actionCell = r.insertCell(3);
+    
+    let editBtn = document.createElement("button");
+    editBtn.innerText = "✏️ Edit";
+    editBtn.className = "edit-btn";
+    editBtn.onclick = () => editProduct(p, index);
+    actionCell.appendChild(editBtn);
   });
 }
 
@@ -914,6 +1192,7 @@ async function loadDataFromFirebase(){
 
 // ====== INIT ======
 window.init = async function(){
+  loadDarkModePreference();
   await loadDataFromFirebase();
   updateSalesTable();
   updateSummary();

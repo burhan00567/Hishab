@@ -221,6 +221,127 @@ th{
     font-weight:bold;
 }
 
+/* EDIT BUTTON */
+.edit-btn{
+    padding:6px 12px;
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color:white;
+    border:none;
+    border-radius:6px;
+    font-size:12px;
+    cursor:pointer;
+    font-weight:bold;
+    transition:0.3s;
+}
+
+.edit-btn:hover{
+    background: linear-gradient(135deg, #1e40af, #1e3a8a);
+    transform:scale(1.05);
+}
+
+/* DELETE BUTTON */
+.delete-btn{
+    padding:6px 12px;
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color:white;
+    border:none;
+    border-radius:6px;
+    font-size:12px;
+    cursor:pointer;
+    font-weight:bold;
+    transition:0.3s;
+    margin-left:5px;
+}
+
+.delete-btn:hover{
+    background: linear-gradient(135deg, #b91c1c, #991b1b);
+    transform:scale(1.05);
+}
+
+/* MODAL DIALOG */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal.show {
+    display: block;
+}
+
+.modal-content {
+    background-color: white;
+    margin: 50px auto;
+    padding: 25px;
+    border-radius: 12px;
+    width: 85%;
+    max-width: 400px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #111827;
+}
+
+.modal-body {
+    margin-bottom: 20px;
+}
+
+.modal-body input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+}
+
+.modal-body input:focus {
+    border-color: #6366f1;
+}
+
+.modal-footer {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.modal-footer button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.modal-save {
+    background: linear-gradient(135deg, #6366f1, #3b82f6);
+    color: white;
+}
+
+.modal-save:hover {
+    background: linear-gradient(135deg, #4f46e5, #2563eb);
+}
+
+.modal-cancel {
+    background: #e5e7eb;
+    color: #111827;
+}
+
+.modal-cancel:hover {
+    background: #d1d5db;
+}
+
 /* Status Messages */
 .status-msg{
     padding:10px;
@@ -260,6 +381,22 @@ th{
 <input type="hidden" name="_captcha" value="false">
 <textarea name="message" id="backupMessage"></textarea>
 </form>
+
+<!-- EDIT MODAL -->
+<div id="editModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">✏️ Edit Sale</div>
+    <div class="modal-body">
+      <input id="editCustomerName" type="text" placeholder="Customer Name">
+      <input id="editProduct" type="text" placeholder="Product">
+      <input id="editSellPrice" type="number" placeholder="Sell Price">
+    </div>
+    <div class="modal-footer">
+      <button class="modal-cancel" onclick="closeEditModal()">Cancel</button>
+      <button class="modal-save" onclick="saveSaleChanges()">Save</button>
+    </div>
+  </div>
+</div>
 
 <!-- TOP -->
 <div class="top-menu">
@@ -314,7 +451,7 @@ th{
 <div class="table-container">
 <table>
 <thead>
-<tr><th>Customer</th><th>Product</th><th>Sell Price</th><th>Profit</th><th>Date</th></tr>
+<tr><th>Customer</th><th>Product</th><th>Sell Price</th><th>Profit</th><th>Date</th><th>Action</th></tr>
 </thead>
 <tbody id="salesTableBody"></tbody>
 </table>
@@ -379,17 +516,8 @@ let totalSales = 0;
 let totalProfit = 0;
 let totalInvestment = 0;
 
-// PASSWORD
-const APP_PASSWORD = "burhan786";
+// RESET PASSWORD ONLY
 const RESET_PASSWORD = "reset786";
-
-(function(){
-  let p = prompt("Password");
-  if(p !== APP_PASSWORD){
-    document.body.innerHTML = "Denied";
-    throw new Error();
-  }
-})();
 
 // ====== PAGE NAVIGATION ======
 window.showPage = function(page){
@@ -441,7 +569,94 @@ window.showHistory = function(type){
   }
 }
 
-// ====== UPDATE PRODUCT TABLE ======
+// ====== GLOBAL EDIT VARIABLE ======
+let currentEditSale = null;
+
+window.editSale = function(sale, index){
+  currentEditSale = sale;
+  
+  document.getElementById("editCustomerName").value = sale.customerName;
+  document.getElementById("editProduct").value = sale.productName;
+  document.getElementById("editSellPrice").value = sale.sellPrice;
+  
+  document.getElementById("editModal").classList.add("show");
+};
+
+// ====== CLOSE MODAL ======
+window.closeEditModal = function(){
+  document.getElementById("editModal").classList.remove("show");
+  currentEditSale = null;
+};
+
+// ====== SAVE SALE CHANGES ======
+window.saveSaleChanges = async function(){
+  if(!currentEditSale) return;
+
+  let newCustomer = document.getElementById("editCustomerName").value.trim();
+  let newProduct = document.getElementById("editProduct").value.trim();
+  let newPrice = Number(document.getElementById("editSellPrice").value);
+
+  if(!newCustomer || !newProduct || newPrice <= 0) {
+    alert("❌ Please fill all fields correctly");
+    return;
+  }
+
+  // পুরোনো প্রোডাক্ট খুঁজে বের করা
+  let oldPr = products.find(p => p.name.toLowerCase() === currentEditSale.productName.toLowerCase());
+  let newPr = products.find(p => p.name.toLowerCase() === newProduct.toLowerCase());
+
+  if(!newPr) {
+    alert("❌ Product not found");
+    return;
+  }
+
+  try {
+    // Firebase এ সেল আপডেট করা
+    if(currentEditSale.id) {
+      const saleQuery = query(collection(db, "sales"), where("customerName", "==", currentEditSale.customerName), where("productName", "==", currentEditSale.productName));
+      const saleSnap = await getDocs(saleQuery);
+      
+      saleSnap.forEach(async (docSnap) => {
+        await updateDoc(doc(db, "sales", docSnap.id), {
+          customerName: newCustomer,
+          productName: newProduct,
+          sellPrice: newPrice,
+          profit: newPrice - newPr.cost,
+          dateTime: currentEditSale.dateTime
+        });
+      });
+    }
+
+    // পুরোনো ডেটা রিভার্ট - শুধু স্টক এবং সেলস
+    if(oldPr) {
+      oldPr.qty += 1;
+    }
+    totalSales -= currentEditSale.sellPrice;
+    totalProfit -= currentEditSale.profit;
+
+    // নতুন ডেটা - শুধু স্টক এবং সেলস
+    newPr.qty -= 1;
+    // Investment কোনোভাবেই পরিবর্তন হবে না!
+
+    let newProfit = (newPrice - newPr.cost);
+    totalSales += newPrice;
+    totalProfit += newProfit;
+
+    // সেলস লিস্ট আপডেট করা
+    currentEditSale.customerName = newCustomer;
+    currentEditSale.productName = newProduct;
+    currentEditSale.sellPrice = newPrice;
+    currentEditSale.profit = newProfit;
+
+    updateSalesTable();
+    updateSummary();
+
+    closeEditModal();
+    alert("✅ Sale updated successfully!");
+  } catch(error){
+    alert("❌ Error: " + error.message);
+  }
+};
 function updateProductHistoryTable(){
   let t = productHistoryTable;
   t.innerHTML = "";
@@ -457,13 +672,22 @@ function updateProductHistoryTable(){
 function updateSalesTable(){
   let t = salesTableBody;
   t.innerHTML = "";
-  salesList.slice().reverse().forEach(s => {
+  salesList.slice().reverse().forEach((s, index) => {
     let r = t.insertRow();
     r.insertCell(0).innerText = s.customerName;
     r.insertCell(1).innerText = s.productName;
     r.insertCell(2).innerText = s.sellPrice;
     r.insertCell(3).innerText = s.profit;
     r.insertCell(4).innerText = s.dateTime;
+    
+    // শুধু Edit বাটন
+    let actionCell = r.insertCell(5);
+    
+    let editBtn = document.createElement("button");
+    editBtn.innerText = "✏️ Edit";
+    editBtn.className = "edit-btn";
+    editBtn.onclick = () => editSale(s, index);
+    actionCell.appendChild(editBtn);
   });
 }
 
@@ -503,11 +727,14 @@ window.addProduct = async function(){
   try {
     showStatus("productStatus", "⏳ Saving...", "loading");
 
+    let investAmount = c * q;
+
     // Firebase এ save করা
     await addDoc(collection(db, "products"), {
       name: n,
       cost: c,
       qty: q,
+      investedAmount: investAmount,
       createdAt: new Date().toLocaleString()
     });
 
@@ -515,16 +742,18 @@ window.addProduct = async function(){
     let ex = products.find(p => p.name.toLowerCase() === n.toLowerCase());
     if(ex){
       ex.qty += q;
+      ex.investedAmount = (ex.investedAmount || 0) + investAmount;
     } else {
       products.push({
         id: Date.now(),
         name: n,
         cost: c,
-        qty: q
+        qty: q,
+        investedAmount: investAmount
       });
     }
 
-    totalInvestment += c * q;
+    totalInvestment += investAmount;
 
     updateProductHistoryTable();
     updateSummary();
@@ -533,7 +762,7 @@ window.addProduct = async function(){
     costPrice.value = "";
     quantity.value = "";
 
-    showStatus("productStatus", "Product saved online!", "success");
+    showStatus("productStatus", "✅ Product saved online!", "success");
   } catch(error){
     showStatus("productStatus", "❌ Error: " + error.message, "error");
   }
@@ -558,11 +787,11 @@ window.addSale = async function(){
   }
 
   try {
-    showStatus("saleStatus", "Saving...", "loading");
+    showStatus("saleStatus", "⏳ Saving...", "loading");
 
     let profitAmount = (p - pr.cost) * q;
 
-    // Firebase এ save করা
+    // Firebase এ sale save করা
     await addDoc(collection(db, "sales"), {
       customerName: cn,
       productName: pr.name,
@@ -571,10 +800,21 @@ window.addSale = async function(){
       dateTime: new Date().toLocaleString()
     });
 
-    // Local update
+    // Firebase এ প্রোডাক্ট স্টক আপডেট করা
+    const productQuery = query(collection(db, "products"), where("name", "==", pr.name));
+    const productSnap = await getDocs(productQuery);
+    
+    productSnap.forEach(async (docSnap) => {
+      await updateDoc(doc(db, "products", docSnap.id), {
+        qty: docSnap.data().qty - q
+      });
+    });
+
+    // Local update - Investment টাচ করছি না!
     pr.qty -= q;
     totalSales += p * q;
     totalProfit += profitAmount;
+    // totalInvestment কোনোভাবেই পরিবর্তন হবে না
 
     salesList.push({
       customerName: cn,
@@ -591,7 +831,7 @@ window.addSale = async function(){
     saleProduct.value = "";
     sellPrice.value = "";
 
-    showStatus("saleStatus", " Sale saved online!", "success");
+    showStatus("saleStatus", "✅ Sale saved online!", "success");
   } catch(error){
     showStatus("saleStatus", "❌ Error: " + error.message, "error");
   }
@@ -618,7 +858,7 @@ window.resetAllData = async function(){
     updateSalesTable();
     updateSummary();
 
-    alert("Full Reset Done (Firebase + Local)");
+    alert("✅ Full Reset Done (Firebase + Local)");
   } catch(error){
     alert("❌ Error: " + error.message);
   }
@@ -638,9 +878,10 @@ async function loadDataFromFirebase(){
         id: doc.id,
         name: data.name,
         cost: data.cost,
-        qty: data.qty
+        qty: data.qty,
+        investedAmount: data.investedAmount || (data.cost * data.qty)
       });
-      totalInvestment += data.cost * data.qty;
+      totalInvestment += data.investedAmount || (data.cost * data.qty);
     });
 
     // Load Sales

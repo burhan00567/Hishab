@@ -93,22 +93,39 @@ body{
 .small-card p{color:#6b7280;}
 
 /* TABLE */
+.table-container{
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    margin-top:8px;
+    border-radius:10px;
+    background:white;
+}
+
+.table-container-no-scroll{
+    overflow-x:hidden;
+    -webkit-overflow-scrolling:touch;
+    margin-top:8px;
+    border-radius:10px;
+    background:white;
+}
+
 table{
     width:100%;
     border-collapse:collapse;
-    margin-top:8px;
-    border-radius:10px;
-    overflow:hidden;
+    min-width:100%;
 }
 
 th,td{
     border:1px solid #e5e7eb;
-    padding:10px;
+    padding:12px 8px;
     text-align:center;
+    white-space:nowrap;
+    font-size:13px;
 }
 
 th{
     background: linear-gradient(135deg, #e0e7ff, #f1f5f9);
+    font-weight:bold;
 }
 
 /* FORM */
@@ -280,7 +297,9 @@ th{
 <button class="history-btn" id="productHistoryBtn" onclick="showHistory('products')">📦 Products</button>
 </div>
 
+<!-- প্রোডাক্ট লিস্ট - স্ক্রল নেই -->
 <div class="card" id="productHistoryCard" style="display:none;">
+<div class="table-container-no-scroll">
 <table>
 <thead>
 <tr><th>Product</th><th>Cost</th><th>Stock</th></tr>
@@ -288,14 +307,18 @@ th{
 <tbody id="productHistoryTable"></tbody>
 </table>
 </div>
+</div>
 
+<!-- সেলস লিস্ট - স্ক্রল আছে -->
 <div class="card" id="salesHistoryCard">
+<div class="table-container">
 <table>
 <thead>
-<tr><th>Product</th><th>Sell Price</th><th>Profit</th><th>Date</th></tr>
+<tr><th>Customer</th><th>Product</th><th>Sell Price</th><th>Profit</th><th>Date</th></tr>
 </thead>
 <tbody id="salesTableBody"></tbody>
 </table>
+</div>
 </div>
 
 <div class="card">
@@ -321,6 +344,7 @@ th{
 </div>
 
 <div id="saleForm" class="card form-box">
+<input id="customerName" placeholder="Customer Name">
 <input id="saleProduct" placeholder="Product">
 <input id="sellPrice" type="number" placeholder="Sell">
 <button onclick="addSale()">Add</button>
@@ -435,10 +459,11 @@ function updateSalesTable(){
   t.innerHTML = "";
   salesList.slice().reverse().forEach(s => {
     let r = t.insertRow();
-    r.insertCell(0).innerText = s.productName;
-    r.insertCell(1).innerText = s.sellPrice;
-    r.insertCell(2).innerText = s.profit;
-    r.insertCell(3).innerText = s.dateTime;
+    r.insertCell(0).innerText = s.customerName;
+    r.insertCell(1).innerText = s.productName;
+    r.insertCell(2).innerText = s.sellPrice;
+    r.insertCell(3).innerText = s.profit;
+    r.insertCell(4).innerText = s.dateTime;
   });
 }
 
@@ -508,7 +533,7 @@ window.addProduct = async function(){
     costPrice.value = "";
     quantity.value = "";
 
-    showStatus("productStatus", "✅ Product saved online!", "success");
+    showStatus("productStatus", "Product saved online!", "success");
   } catch(error){
     showStatus("productStatus", "❌ Error: " + error.message, "error");
   }
@@ -516,9 +541,15 @@ window.addProduct = async function(){
 
 // ====== ADD SALE (FIREBASE) ======
 window.addSale = async function(){
+  let cn = customerName.value.trim();
   let n = saleProduct.value.trim();
   let p = Number(sellPrice.value);
   let q = 1;
+
+  if(!cn) {
+    showStatus("saleStatus", "❌ Customer name required", "error");
+    return;
+  }
 
   let pr = products.find(x => x.name.toLowerCase() === n.toLowerCase());
   if(!pr || pr.qty < q) {
@@ -527,12 +558,13 @@ window.addSale = async function(){
   }
 
   try {
-    showStatus("saleStatus", "⏳ Saving...", "loading");
+    showStatus("saleStatus", "Saving...", "loading");
 
     let profitAmount = (p - pr.cost) * q;
 
     // Firebase এ save করা
     await addDoc(collection(db, "sales"), {
+      customerName: cn,
       productName: pr.name,
       sellPrice: p,
       profit: profitAmount,
@@ -545,6 +577,7 @@ window.addSale = async function(){
     totalProfit += profitAmount;
 
     salesList.push({
+      customerName: cn,
       productName: pr.name,
       sellPrice: p,
       profit: profitAmount,
@@ -554,10 +587,11 @@ window.addSale = async function(){
     updateSalesTable();
     updateSummary();
 
+    customerName.value = "";
     saleProduct.value = "";
     sellPrice.value = "";
 
-    showStatus("saleStatus", "✅ Sale saved online!", "success");
+    showStatus("saleStatus", " Sale saved online!", "success");
   } catch(error){
     showStatus("saleStatus", "❌ Error: " + error.message, "error");
   }
@@ -584,7 +618,7 @@ window.resetAllData = async function(){
     updateSalesTable();
     updateSummary();
 
-    alert("✅ Full Reset Done (Firebase + Local)");
+    alert("Full Reset Done (Firebase + Local)");
   } catch(error){
     alert("❌ Error: " + error.message);
   }
@@ -619,6 +653,7 @@ async function loadDataFromFirebase(){
       const data = doc.data();
       salesList.push({
         id: doc.id,
+        customerName: data.customerName,
         productName: data.productName,
         sellPrice: data.sellPrice,
         profit: data.profit,

@@ -2,21 +2,19 @@
 <html lang="bn">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Secure Business Manager</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Secure Business Manager | Order to Sales</title>
 <style>
-
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family:Arial;
+    font-family: Arial, sans-serif;
 }
 
 body{
     background: linear-gradient(135deg, #eef2ff, #f8fafc);
-    padding-bottom:30px;
+    padding-bottom: 30px;
 }
 
 /* TOP MENU */
@@ -101,14 +99,6 @@ body{
     background:white;
 }
 
-.table-container-no-scroll{
-    overflow-x:hidden;
-    -webkit-overflow-scrolling:touch;
-    margin-top:8px;
-    border-radius:10px;
-    background:white;
-}
-
 table{
     width:100%;
     border-collapse:collapse;
@@ -128,14 +118,16 @@ th{
     font-weight:bold;
 }
 
-/* FORM */
 .add-menu{
     display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:10px;
     margin-top:20px;
 }
 
 .add-menu button{
-    width:50%;
+    width:170px;
     padding:15px;
     border:none;
     background:white;
@@ -197,7 +189,7 @@ th{
 }
 
 .history-btn{
-    width:50%;
+    width:33.33%;
     padding:18px;
     background:white;
     border:none;
@@ -211,9 +203,12 @@ th{
     background:#f3f4f6;
 }
 
-.active-history{
-    background: linear-gradient(135deg, #dbeafe, #eef2ff);
-    color:#1d4ed8;
+.history-btn.active-history {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+    border-radius: 10px;
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
 .low-stock{
@@ -221,7 +216,7 @@ th{
     font-weight:bold;
 }
 
-/* EDIT BUTTON */
+/* BUTTONS */
 .edit-btn{
     padding:6px 12px;
     background: linear-gradient(135deg, #3b82f6, #2563eb);
@@ -239,7 +234,6 @@ th{
     transform:scale(1.05);
 }
 
-/* DELETE BUTTON */
 .delete-btn{
     padding:6px 12px;
     background: linear-gradient(135deg, #ef4444, #dc2626);
@@ -258,7 +252,24 @@ th{
     transform:scale(1.05);
 }
 
-/* MODAL DIALOG */
+.delivered-btn{
+    padding:8px 14px;
+    background: linear-gradient(135deg, #10b981, #059669);
+    color:white;
+    border:none;
+    border-radius:6px;
+    font-size:12px;
+    cursor:pointer;
+    font-weight:bold;
+    transition:0.3s;
+}
+
+.delivered-btn:hover{
+    background: linear-gradient(135deg, #047857, #065f46);
+    transform:scale(1.05);
+}
+
+/* MODAL */
 .modal {
     display: none;
     position: fixed;
@@ -289,10 +300,6 @@ th{
     font-weight: bold;
     margin-bottom: 20px;
     color: #111827;
-}
-
-.modal-body {
-    margin-bottom: 20px;
 }
 
 .modal-body input {
@@ -366,47 +373,41 @@ th{
     color:#991b1b;
 }
 
-.status-loading{
-    background:#dbeafe;
-    color:#1d4ed8;
-}
-
 /* DARK MODE */
 body.dark-mode {
     background: linear-gradient(135deg, #1f2937, #111827);
     color: #e5e7eb;
 }
 
-body.dark-mode .card {
-    background: #1f2937;
+body.dark-mode .big-card h1,
+body.dark-mode .small-card h2 {
+    color: #ffffff;
+}
+
+body.dark-mode .big-card p,
+body.dark-mode .small-card p {
+    color: #cbd5e1;
+}
+
+body.dark-mode .card,
+body.dark-mode .top-menu,
+body.dark-mode .add-menu button,
+body.dark-mode .modal-content,
+body.dark-mode .history-btn {
+    background: #111827;
     color: #e5e7eb;
 }
 
 body.dark-mode .top-menu {
-    background: #111827;
     border-bottom-color: #374151;
-}
-
-body.dark-mode .top-menu button {
-    background: #111827;
-    color: #e5e7eb;
 }
 
 body.dark-mode .top-menu button:hover {
     background: #374151;
 }
 
-body.dark-mode .big-card h1 {
-    color: #e5e7eb;
-}
-
-body.dark-mode .big-card p,
-body.dark-mode .small-card p {
-    color: #9ca3af;
-}
-
-body.dark-mode .small-card h2 {
-    color: #e5e7eb;
+body.dark-mode .card {
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
 }
 
 body.dark-mode table {
@@ -420,153 +421,61 @@ body.dark-mode th {
 
 body.dark-mode th,
 body.dark-mode td {
-    border-color: #374151;
+    border: 1px solid rgba(255,255,255,0.15);
     color: #e5e7eb;
 }
 
+body.dark-mode input,
 body.dark-mode .form-box input {
     background: #374151;
     border-color: #4b5563;
     color: #e5e7eb;
 }
 
-body.dark-mode .form-box input:focus {
+body.dark-mode input:focus {
     border-color: #6366f1;
-}
-
-body.dark-mode .history-switch {
-    border-color: #374151;
-    background: #111827;
-}
-
-body.dark-mode .history-btn {
-    background: #111827;
-    color: #e5e7eb;
-}
-
-body.dark-mode .history-btn:hover {
-    background: #374151;
-}
-
-body.dark-mode .active-history {
-    background: #374151;
-    color: #93c5fd;
 }
 
 body.dark-mode .modal {
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(0,0,0,0.7);
 }
 
-body.dark-mode .modal-content {
-    background: #1f2937;
-    color: #e5e7eb;
+body.dark-mode .history-btn.active-history {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
 }
 
-body.dark-mode .modal-header {
-    color: #e5e7eb;
-}
-
-body.dark-mode .modal-body input {
-    background: #374151;
-    border-color: #4b5563;
-    color: #e5e7eb;
-}
-
-body.dark-mode .modal-body input:focus {
-    border-color: #6366f1;
-}
-
-body.dark-mode .modal-cancel {
-    background: #374151;
-    color: #e5e7eb;
-}
-
-body.dark-mode .modal-cancel:hover {
-    background: #4b5563;
-}
-
-body.dark-mode .add-menu button {
-    background: #111827;
-    color: #e5e7eb;
-}
-
-body.dark-mode .add-menu button:hover {
-    background: #374151;
-}
-
-/* DARK MODE TOGGLE BUTTON */
 .dark-mode-toggle {
     position: fixed;
-    top: 20px;
+    bottom: 20px;
     right: 20px;
     z-index: 999;
-    padding: 10px 15px;
     background: linear-gradient(135deg, #6366f1, #3b82f6);
     color: white;
     border: none;
     border-radius: 50px;
+    padding: 10px 15px;
     font-size: 18px;
     cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    transition: 0.3s;
-}
-
-.dark-mode-toggle:hover {
-    transform: scale(1.1);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
 body.dark-mode .dark-mode-toggle {
     background: linear-gradient(135deg, #fbbf24, #f59e0b);
 }
-
 </style>
 </head>
-
 <body>
 
-<!-- DARK MODE TOGGLE BUTTON -->
 <button class="dark-mode-toggle" onclick="toggleDarkMode()" title="Toggle Dark Mode">🌙</button>
 
-<form id="backupForm" action="https://formsubmit.co/muburhan275@gmail.com" method="POST" style="display:none;">
-<input type="hidden" name="_subject" value="Backup">
-<input type="hidden" name="_captcha" value="false">
-<textarea name="message" id="backupMessage"></textarea>
-</form>
+<!-- MODALS -->
+<div id="editModal" class="modal"><div class="modal-content"><div class="modal-header">✏️ Edit Sale</div><div class="modal-body"><input id="editCustomerName" placeholder="Customer Name"><input id="editProduct" placeholder="Product"><input id="editSellPrice" type="number" placeholder="Sell Price"></div><div class="modal-footer"><button class="modal-cancel" onclick="closeEditModal()">Cancel</button><button class="modal-save" onclick="saveSaleChanges()">Save</button></div></div></div>
+<div id="editProductModal" class="modal"><div class="modal-content"><div class="modal-header">✏️ Edit Product</div><div class="modal-body"><input id="editProductName" placeholder="Product Name"><input id="editProductCost" type="number" placeholder="Cost Price"><input id="editProductQty" type="number" placeholder="Quantity"></div><div class="modal-footer"><button class="modal-cancel" onclick="closeEditProductModal()">Cancel</button><button class="modal-save" onclick="saveProductChanges()">Save</button></div></div></div>
+<div id="editOrderModal" class="modal"><div class="modal-content"><div class="modal-header">✏️ Edit Order</div><div class="modal-body"><input id="editOrderCustomer" placeholder="Customer"><input id="editOrderProduct" placeholder="Product"><input id="editOrderPrice" type="number" placeholder="Price"></div><div class="modal-footer"><button class="modal-cancel" onclick="closeEditOrderModal()">Cancel</button><button class="modal-save" onclick="saveOrderChanges()">Save</button></div></div></div>
 
-<!-- EDIT SALE MODAL -->
-<div id="editModal" class="modal">
-  <div class="modal-content">
-    <div class="modal-header">✏️ Edit Sale</div>
-    <div class="modal-body">
-      <input id="editCustomerName" type="text" placeholder="Customer Name">
-      <input id="editProduct" type="text" placeholder="Product">
-      <input id="editSellPrice" type="number" placeholder="Sell Price">
-    </div>
-    <div class="modal-footer">
-      <button class="modal-cancel" onclick="closeEditModal()">Cancel</button>
-      <button class="modal-save" onclick="saveSaleChanges()">Save</button>
-    </div>
-  </div>
-</div>
-
-<!-- EDIT PRODUCT MODAL -->
-<div id="editProductModal" class="modal">
-  <div class="modal-content">
-    <div class="modal-header">✏️ Edit Product</div>
-    <div class="modal-body">
-      <input id="editProductName" type="text" placeholder="Product Name">
-      <input id="editProductCost" type="number" placeholder="Cost Price">
-      <input id="editProductQty" type="number" placeholder="Quantity">
-    </div>
-    <div class="modal-footer">
-      <button class="modal-cancel" onclick="closeEditProductModal()">Cancel</button>
-      <button class="modal-save" onclick="saveProductChanges()">Save</button>
-    </div>
-  </div>
-</div>
-
-<!-- TOP -->
+<!-- TOP MENU -->
 <div class="top-menu">
 <button id="dashboardBtn" class="active-tab" onclick="showPage('dashboard')">Dashboard</button>
 <button id="addInfoBtn" onclick="showPage('addInfo')">Add Info</button>
@@ -574,97 +483,107 @@ body.dark-mode .dark-mode-toggle {
 
 <!-- DASHBOARD -->
 <div id="dashboard" class="page active-page">
-
-<div class="card big-card">
-<h1><span id="investment">0</span> ৳</h1>
-<p>Investment</p>
-</div>
-
-<div class="small-cards">
-<div class="card small-card">
-<h2><span id="sales">0</span> ৳</h2>
-<p>Sales</p>
-</div>
-
-<div class="card small-card">
-<h2><span id="profit">0</span> ৳</h2>
-<p>Profit</p>
-</div>
-</div>
-
-<div class="card big-card">
-<h1><span id="stockValue">0</span> ৳</h1>
-<p>Stock Value</p>
-</div>
-
+<div class="card big-card"><h1><span id="investment">0</span> ৳</h1><p>Investment</p></div>
+<div class="small-cards"><div class="card small-card"><h2><span id="sales">0</span> ৳</h2><p>Sales</p></div><div class="card small-card"><h2><span id="profit">0</span> ৳</h2><p>Profit</p></div></div>
+<div class="card big-card"><h1><span id="stockValue">0</span> ৳</h1><p>Stock Value</p></div>
 <div class="history-switch">
-<button class="history-btn active-history" id="salesHistoryBtn" onclick="showHistory('sales')">🧾 Sales</button>
-<button class="history-btn" id="productHistoryBtn" onclick="showHistory('products')">📦 Products</button>
+
+<button class="history-btn active-history"
+id="salesHistoryBtn"
+onclick="showHistory('sales')">
+🧾 Sales
+</button>
+
+<button class="history-btn"
+id="orderHistoryBtn"
+onclick="showHistory('orders')">
+🚚 Orders
+</button>
+
+<button class="history-btn"
+id="productHistoryBtn"
+onclick="showHistory('products')">
+📦 Products
+</button>
+
+    </div>
+<div id="productHistoryCard" class="card" style="display:none;"><div class="table-container"><table><thead><tr><th>Product</th><th>Cost</th><th>Stock</th><th>Action</th></tr></thead><tbody id="productHistoryTable"></tbody></table></div></div>
+<div id="salesHistoryCard" class="card"><div class="table-container"><table><thead><tr><th>Customer Name</th><th>Product</th><th>Sell Price</th><th>Profit</th><th>Date</th><th>Action</th></tr></thead><tbody id="salesTableBody"></tbody></table></div></div>
+<div id="orderHistoryCard" class="card" style="display:none;"><div class="table-container"><table><thead><tr><th>Customer</th><th>Product</th><th>Price</th><th>Date</th><th>Action</th></tr></thead><tbody id="orderTableBody"></tbody></table></div></div>
+<div class="card"><button class="reset-btn" onclick="resetAllData()">Reset All</button></div>
 </div>
 
-<!-- প্রোডাক্ট লিস্ট - স্ক্রল নেই -->
-<div class="card" id="productHistoryCard" style="display:none;">
-<div class="table-container-no-scroll">
-<table>
-<thead>
-<tr><th>Product</th><th>Cost</th><th>Stock</th><th>Action</th></tr>
-</thead>
-<tbody id="productHistoryTable"></tbody>
-</table>
-</div>
-</div>
-
-<!-- সেলস লিস্ট - স্ক্রল আছে -->
-<div class="card" id="salesHistoryCard">
-<div class="table-container">
-<table>
-<thead>
-<tr><th>Customer</th><th>Product</th><th>Sell Price</th><th>Profit</th><th>Date</th><th>Action</th></tr>
-</thead>
-<tbody id="salesTableBody"></tbody>
-</table>
-</div>
-</div>
-
-<div class="card">
-<button class="reset-btn" onclick="resetAllData()">Reset All</button>
-</div>
-
-</div>
-
-<!-- ADD INFO -->
+<!-- ADD INFO PAGE -->
 <div id="addInfo" class="page">
 
 <div class="add-menu">
-<button id="saleTab" class="active-tab" onclick="showForm('sale')">Add Sale</button>
-<button id="productTab" onclick="showForm('product')">Add Product</button>
-</div>
 
-<div id="productForm" class="card form-box hide">
-<input id="productName" placeholder="Product">
-<input id="costPrice" type="number" placeholder="Cost">
-<input id="quantity" type="number" placeholder="Qty">
-<button onclick="addProduct()">Add</button>
-<div id="productStatus" class="status-msg"></div>
-</div>
+<button id="orderTab"
+class="active-tab"
+onclick="showForm('order')">
+Add Order
+</button>
 
-<div id="saleForm" class="card form-box">
-<input id="customerName" placeholder="Customer Name">
-<input id="saleProduct" placeholder="Product">
-<input id="sellPrice" type="number" placeholder="Sell">
-<button onclick="addSale()">Add</button>
-<div id="saleStatus" class="status-msg"></div>
-</div>
+<button id="productTab"
+onclick="showForm('product')">
+Add Product
+</button>
 
 </div>
 
-<!-- ====== FIREBASE SETUP ====== -->
+<!-- ORDER FORM -->
+<div id="orderForm" class="card form-box">
+
+<input id="orderCustomer"
+placeholder="Customer Name">
+
+<input id="orderProduct"
+placeholder="Product">
+
+<input id="orderPrice"
+type="number"
+placeholder="Price">
+
+<button onclick="addOrder()">
+Add Order
+</button>
+
+<div id="orderStatus"
+class="status-msg"></div>
+
+</div>
+
+<!-- PRODUCT FORM -->
+<div id="productForm"
+class="card form-box hide">
+
+<input id="productName"
+placeholder="Product">
+
+<input id="costPrice"
+type="number"
+placeholder="Cost">
+
+<input id="quantity"
+type="number"
+placeholder="Qty">
+
+<button onclick="addProduct()">
+Add
+</button>
+
+<div id="productStatus"
+class="status-msg"></div>
+
+</div>
+
+</div>
+</div>
+
 <script type="module">
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, query, where, updateDoc, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// 🔴 আপনার Firebase Config
 const firebaseConfig = {
   apiKey: "AIzaSyBvoJkTeAErHbU9IC9PYKlMvbWt_0vmMwg",
   authDomain: "hishab-f5039.firebaseapp.com",
@@ -677,530 +596,338 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// ====== GLOBAL VARIABLES ======
 let products = [];
 let salesList = [];
+let ordersList = [];
 let totalSales = 0;
 let totalProfit = 0;
 let totalInvestment = 0;
-
-// RESET PASSWORD ONLY
 const RESET_PASSWORD = "reset786";
 
-// ====== DARK MODE TOGGLE ======
 window.toggleDarkMode = function(){
-  let body = document.body;
-  body.classList.toggle("dark-mode");
-  
-  // Local Storage এ সংরক্ষণ করা
-  if(body.classList.contains("dark-mode")){
-    localStorage.setItem("darkMode", "enabled");
-    document.querySelector(".dark-mode-toggle").textContent = "☀️";
-  } else {
-    localStorage.setItem("darkMode", "disabled");
-    document.querySelector(".dark-mode-toggle").textContent = "🌙";
-  }
+  document.body.classList.toggle("dark-mode");
+  const isDark = document.body.classList.contains("dark-mode");
+  localStorage.setItem("darkMode", isDark ? "enabled" : "disabled");
+  document.querySelector(".dark-mode-toggle").textContent = isDark ? "☀️" : "🌙";
 };
 
-// ====== LOAD DARK MODE PREFERENCE ======
-window.loadDarkModePreference = function(){
-  let darkModeStatus = localStorage.getItem("darkMode");
-  if(darkModeStatus === "enabled"){
+function loadDarkModePref(){
+  if(localStorage.getItem("darkMode") === "enabled"){
     document.body.classList.add("dark-mode");
     document.querySelector(".dark-mode-toggle").textContent = "☀️";
   }
-};
+}
 
-// ====== PAGE NAVIGATION ======
 window.showPage = function(page){
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active-page"));
   document.getElementById(page).classList.add("active-page");
+  const dbBtn = document.getElementById("dashboardBtn"), addBtn = document.getElementById("addInfoBtn");
+  dbBtn.classList.toggle("active-tab", page === "dashboard");
+  addBtn.classList.toggle("active-tab", page === "addInfo");
+};
 
-  dashboardBtn.classList.remove("active-tab");
-  addInfoBtn.classList.remove("active-tab");
-
-  if(page === "dashboard"){
-    dashboardBtn.classList.add("active-tab");
-  } else {
-    addInfoBtn.classList.add("active-tab");
-  }
-}
-
-// ====== FORM NAVIGATION ======
 window.showForm = function(type){
-  saleForm.classList.add("hide");
-  productForm.classList.add("hide");
-
-  saleTab.classList.remove("active-tab");
-  productTab.classList.remove("active-tab");
-
-  if(type === "sale"){
-    saleForm.classList.remove("hide");
-    saleTab.classList.add("active-tab");
-  } else {
-    productForm.classList.remove("hide");
-    productTab.classList.add("active-tab");
+  document.getElementById("productForm").classList.add("hide");
+  document.getElementById("orderForm").classList.add("hide");
+  document.getElementById("productTab").classList.remove("active-tab");
+  document.getElementById("orderTab").classList.remove("active-tab");
+  if(type === "product"){
+    document.getElementById("productForm").classList.remove("hide");
+    document.getElementById("productTab").classList.add("active-tab");
+  } else if(type === "order"){
+    document.getElementById("orderForm").classList.remove("hide");
+    document.getElementById("orderTab").classList.add("active-tab");
   }
-}
+};
 
-// ====== HISTORY ======
 window.showHistory = function(type){
-  salesHistoryCard.style.display = "none";
-  productHistoryCard.style.display = "none";
-
-  salesHistoryBtn.classList.remove("active-history");
-  productHistoryBtn.classList.remove("active-history");
-
+  document.getElementById("salesHistoryCard").style.display = "none";
+  document.getElementById("productHistoryCard").style.display = "none";
+  document.getElementById("orderHistoryCard").style.display = "none";
+  document.querySelectorAll(".history-btn").forEach(btn => btn.classList.remove("active-history"));
   if(type === "sales"){
-    salesHistoryCard.style.display = "block";
-    salesHistoryBtn.classList.add("active-history");
-  } else {
-    productHistoryCard.style.display = "block";
-    productHistoryBtn.classList.add("active-history");
+    document.getElementById("salesHistoryCard").style.display = "block";
+    document.getElementById("salesHistoryBtn").classList.add("active-history");
+  } else if(type === "products"){
+    document.getElementById("productHistoryCard").style.display = "block";
+    document.getElementById("productHistoryBtn").classList.add("active-history");
     updateProductHistoryTable();
+  } else if(type === "orders"){
+    document.getElementById("orderHistoryCard").style.display = "block";
+    document.getElementById("orderHistoryBtn").classList.add("active-history");
+    updateOrderTable();
   }
+};
+
+function updateSummary(){
+  document.getElementById("investment").innerText = totalInvestment;
+  document.getElementById("sales").innerText = totalSales;
+  document.getElementById("profit").innerText = totalProfit;
+  const stockVal = products.reduce((sum,p) => sum + (p.cost * p.qty), 0);
+  document.getElementById("stockValue").innerText = stockVal;
 }
 
-// ====== EDIT PRODUCT ======
+function updateProductHistoryTable(){
+  const tbody = document.getElementById("productHistoryTable");
+  tbody.innerHTML = "";
+  products.forEach(p => {
+    const row = tbody.insertRow();
+    row.insertCell(0).innerText = p.name;
+    row.insertCell(1).innerText = p.cost;
+    row.insertCell(2).innerHTML = p.qty < 3 ? `<span class="low-stock">${p.qty}</span>` : p.qty;
+    const actionCell = row.insertCell(3);
+    const editBtn = document.createElement("button"); editBtn.innerText = "✏️ Edit"; editBtn.className = "edit-btn";
+    editBtn.onclick = () => editProduct(p);
+    const delBtn = document.createElement("button"); delBtn.innerText = "🗑️ Delete"; delBtn.className = "delete-btn";
+    delBtn.onclick = () => deleteProduct(p);
+    actionCell.append(editBtn, delBtn);
+  });
+}
+
+function updateSalesTable(){
+  const tbody = document.getElementById("salesTableBody");
+  tbody.innerHTML = "";
+  [...salesList].reverse().forEach(sale => {
+    const row = tbody.insertRow();
+    row.insertCell(0).innerText = sale.customerName;
+    row.insertCell(1).innerText = sale.productName;
+    row.insertCell(2).innerText = sale.sellPrice;
+    row.insertCell(3).innerText = sale.profit;
+    row.insertCell(4).innerText = sale.dateTime;
+    const act = row.insertCell(5);
+    const editBtn = document.createElement("button"); editBtn.innerText = "✏️ Edit"; editBtn.className = "edit-btn";
+    editBtn.onclick = () => editSale(sale);
+    const delBtn = document.createElement("button"); delBtn.innerText = "🗑️ Delete"; delBtn.className = "delete-btn";
+    delBtn.onclick = () => deleteSale(sale);
+    act.append(editBtn, delBtn);
+  });
+}
+
+function updateOrderTable(){
+  const tbody = document.getElementById("orderTableBody");
+  tbody.innerHTML = "";
+  [...ordersList].reverse().forEach(order => {
+    const row = tbody.insertRow();
+    row.insertCell(0).innerText = order.customerName;
+    row.insertCell(1).innerText = order.productName;
+    row.insertCell(2).innerText = order.price;
+    row.insertCell(3).innerText = order.dateTime;
+    const act = row.insertCell(4);
+    const deliverBtn = document.createElement("button"); deliverBtn.innerText = "🚚 Delivered"; deliverBtn.className = "delivered-btn";
+    deliverBtn.onclick = () => deliverOrder(order);
+    const editBtn = document.createElement("button"); editBtn.innerText = "✏️ Edit"; editBtn.className = "edit-btn";
+    editBtn.onclick = () => editOrder(order);
+    const delBtn = document.createElement("button"); delBtn.innerText = "🗑️ Delete"; delBtn.className = "delete-btn";
+    delBtn.onclick = () => deleteOrder(order);
+    act.append(deliverBtn, editBtn, delBtn);
+  });
+}
+
+window.addProduct = async function(){
+  const name = document.getElementById("productName").value.trim();
+  const cost = Number(document.getElementById("costPrice").value);
+  const qty = Number(document.getElementById("quantity").value);
+  if(!name || cost<=0 || qty<=0){ showStatus("productStatus","❌ Invalid input","error"); return; }
+  const invested = cost * qty;
+  try{
+    const docRef = await addDoc(collection(db,"products"),{ name, cost, qty, investedAmount: invested, createdAt: new Date().toLocaleString() });
+    const existing = products.find(p => p.name.toLowerCase() === name.toLowerCase());
+    if(existing){
+      existing.qty += qty;
+      existing.investedAmount += invested;
+      await updateDoc(doc(db,"products",existing.firebaseId),{ qty: existing.qty, investedAmount: existing.investedAmount });
+    } else {
+      products.push({ firebaseId: docRef.id, name, cost, qty, investedAmount: invested });
+      totalInvestment += invested;
+    }
+    updateProductHistoryTable(); updateSummary();
+    document.getElementById("productName").value = ""; document.getElementById("costPrice").value = ""; document.getElementById("quantity").value = "";
+    showStatus("productStatus","✅ Product saved!","success");
+  } catch(e){ showStatus("productStatus","Error: "+e.message,"error"); }
+};
+
 let currentEditProduct = null;
-
-window.editProduct = function(product, index){
-  currentEditProduct = product;
-  
-  document.getElementById("editProductName").value = product.name;
-  document.getElementById("editProductCost").value = product.cost;
-  document.getElementById("editProductQty").value = product.qty;
-  
-  document.getElementById("editProductModal").classList.add("show");
-};
-
-// ====== CLOSE PRODUCT MODAL ======
-window.closeEditProductModal = function(){
-  document.getElementById("editProductModal").classList.remove("show");
-  currentEditProduct = null;
-};
-
-// ====== SAVE PRODUCT CHANGES ======
+window.editProduct = function(p){ currentEditProduct = p; document.getElementById("editProductName").value = p.name; document.getElementById("editProductCost").value = p.cost; document.getElementById("editProductQty").value = p.qty; document.getElementById("editProductModal").classList.add("show"); };
+window.closeEditProductModal = function(){ document.getElementById("editProductModal").classList.remove("show"); currentEditProduct = null; };
 window.saveProductChanges = async function(){
   if(!currentEditProduct) return;
-
-  let newName = document.getElementById("editProductName").value.trim();
-  let newCost = Number(document.getElementById("editProductCost").value);
-  let newQty = Number(document.getElementById("editProductQty").value);
-
-  if(!newName || newCost <= 0 || newQty <= 0) {
-    alert("❌ Please fill all fields correctly");
-    return;
-  }
-
-  try {
-    // Firebase এ প্রোডাক্ট আপডেট করা
-    const productQuery = query(collection(db, "products"), where("name", "==", currentEditProduct.name));
-    const productSnap = await getDocs(productQuery);
-    
-    productSnap.forEach(async (docSnap) => {
-      // নতুন investedAmount ক্যালকুলেট করা
-      let quantityDiff = newQty - currentEditProduct.qty;
-      let costDiff = newCost - currentEditProduct.cost;
-      let oldInvestment = currentEditProduct.investedAmount || (currentEditProduct.cost * currentEditProduct.qty);
-      let newInvestment = oldInvestment + (costDiff * newQty) + (currentEditProduct.cost * quantityDiff);
-
-      await updateDoc(doc(db, "products", docSnap.id), {
-        name: newName,
-        cost: newCost,
-        qty: newQty,
-        investedAmount: newInvestment
-      });
-    });
-
-    // Investment আপডেট করা
-    let oldInvestment = currentEditProduct.investedAmount || (currentEditProduct.cost * currentEditProduct.qty);
-    let quantityDiff = newQty - currentEditProduct.qty;
-    let costDiff = newCost - currentEditProduct.cost;
-    let newInvestment = oldInvestment + (costDiff * newQty) + (currentEditProduct.cost * quantityDiff);
-    
-    totalInvestment -= oldInvestment;
-    totalInvestment += newInvestment;
-
-    // লোকাল ডেটা আপডেট করা
-    currentEditProduct.name = newName;
-    currentEditProduct.cost = newCost;
-    currentEditProduct.qty = newQty;
-    currentEditProduct.investedAmount = newInvestment;
-
-    updateProductHistoryTable();
-    updateSummary();
-
+  const newName = document.getElementById("editProductName").value.trim();
+  const newCost = Number(document.getElementById("editProductCost").value);
+  const newQty = Number(document.getElementById("editProductQty").value);
+  if(!newName || newCost<=0 || newQty<0){ alert("Invalid"); return; }
+  try{
+    const oldInv = currentEditProduct.investedAmount;
+    const newInv = newCost * newQty;
+    await updateDoc(doc(db,"products",currentEditProduct.firebaseId),{ name:newName, cost:newCost, qty:newQty, investedAmount:newInv });
+    totalInvestment = totalInvestment - oldInv + newInv;
+    currentEditProduct.name = newName; currentEditProduct.cost = newCost; currentEditProduct.qty = newQty; currentEditProduct.investedAmount = newInv;
+    updateProductHistoryTable(); updateSummary();
     closeEditProductModal();
-    alert("✅ Product updated successfully!");
-  } catch(error){
-    alert("❌ Error: " + error.message);
-  }
+    alert("✅ Product updated");
+  } catch(e){ alert(e.message); }
 };
 
-// ====== GLOBAL EDIT VARIABLE ======
+window.deleteProduct = async function(p){
+  if(!confirm(`Delete "${p.name}"?`)) return;
+  try{
+    await deleteDoc(doc(db,"products",p.firebaseId));
+    totalInvestment -= p.investedAmount;
+    products = products.filter(pr => pr.firebaseId !== p.firebaseId);
+    updateProductHistoryTable(); updateSummary();
+    alert("Deleted");
+  } catch(e){ alert(e.message); }
+};
+
 let currentEditSale = null;
-
-window.editSale = function(sale, index){
-  currentEditSale = sale;
-  
-  document.getElementById("editCustomerName").value = sale.customerName;
-  document.getElementById("editProduct").value = sale.productName;
-  document.getElementById("editSellPrice").value = sale.sellPrice;
-  
-  document.getElementById("editModal").classList.add("show");
-};
-
-// ====== CLOSE MODAL ======
-window.closeEditModal = function(){
-  document.getElementById("editModal").classList.remove("show");
-  currentEditSale = null;
-};
-
-// ====== SAVE SALE CHANGES ======
+window.editSale = function(sale){ currentEditSale = sale; document.getElementById("editCustomerName").value = sale.customerName; document.getElementById("editProduct").value = sale.productName; document.getElementById("editSellPrice").value = sale.sellPrice; document.getElementById("editModal").classList.add("show"); };
+window.closeEditModal = function(){ document.getElementById("editModal").classList.remove("show"); currentEditSale = null; };
 window.saveSaleChanges = async function(){
   if(!currentEditSale) return;
-
-  let newCustomer = document.getElementById("editCustomerName").value.trim();
-  let newProduct = document.getElementById("editProduct").value.trim();
-  let newPrice = Number(document.getElementById("editSellPrice").value);
-
-  if(!newCustomer || !newProduct || newPrice <= 0) {
-    alert("❌ Please fill all fields correctly");
-    return;
-  }
-
-  // পুরোনো প্রোডাক্ট খুঁজে বের করা
-  let oldPr = products.find(p => p.name.toLowerCase() === currentEditSale.productName.toLowerCase());
-  let newPr = products.find(p => p.name.toLowerCase() === newProduct.toLowerCase());
-
-  if(!newPr) {
-    alert("❌ Product not found");
-    return;
-  }
-
-  try {
-    // Firebase এ সেল আপডেট করা
-    if(currentEditSale.id) {
-      const saleQuery = query(collection(db, "sales"), where("customerName", "==", currentEditSale.customerName), where("productName", "==", currentEditSale.productName));
-      const saleSnap = await getDocs(saleQuery);
-      
-      saleSnap.forEach(async (docSnap) => {
-        await updateDoc(doc(db, "sales", docSnap.id), {
-          customerName: newCustomer,
-          productName: newProduct,
-          sellPrice: newPrice,
-          profit: newPrice - newPr.cost,
-          dateTime: currentEditSale.dateTime
-        });
-      });
-    }
-
-    // পুরোনো ডেটা রিভার্ট - শুধু স্টক এবং সেলস
-    if(oldPr) {
-      oldPr.qty += 1;
-    }
-    totalSales -= currentEditSale.sellPrice;
-    totalProfit -= currentEditSale.profit;
-
-    // নতুন ডেটা - শুধু স্টক এবং সেলস
-    newPr.qty -= 1;
-    // Investment কোনোভাবেই পরিবর্তন হবে না!
-
-    let newProfit = (newPrice - newPr.cost);
-    totalSales += newPrice;
-    totalProfit += newProfit;
-
-    // সেলস লিস্ট আপডেট করা
-    currentEditSale.customerName = newCustomer;
-    currentEditSale.productName = newProduct;
-    currentEditSale.sellPrice = newPrice;
-    currentEditSale.profit = newProfit;
-
-    updateSalesTable();
-    updateSummary();
-
+  const newCust = document.getElementById("editCustomerName").value.trim();
+  const newProdName = document.getElementById("editProduct").value.trim();
+  const newPrice = Number(document.getElementById("editSellPrice").value);
+  if(!newCust || !newProdName || newPrice<=0){ alert("Invalid"); return; }
+  const product = products.find(p => p.name.toLowerCase() === newProdName.toLowerCase());
+  if(!product){ alert("Product not found"); return; }
+  const oldProduct = products.find(p => p.name === currentEditSale.productName);
+  try{
+    if(oldProduct && currentEditSale.productName !== newProdName){ oldProduct.qty += 1; await updateDoc(doc(db,"products",oldProduct.firebaseId),{ qty: oldProduct.qty }); }
+    if(product && currentEditSale.productName !== newProdName){ if(product.qty<1){ alert("Out of stock"); return; } product.qty -= 1; await updateDoc(doc(db,"products",product.firebaseId),{ qty: product.qty }); }
+    const newProfit = newPrice - product.cost;
+    await updateDoc(doc(db,"sales",currentEditSale.firebaseId),{ customerName:newCust, productName:product.name, sellPrice:newPrice, profit:newProfit });
+    totalSales = totalSales - currentEditSale.sellPrice + newPrice;
+    totalProfit = totalProfit - currentEditSale.profit + newProfit;
+    currentEditSale.customerName = newCust; currentEditSale.productName = product.name; currentEditSale.sellPrice = newPrice; currentEditSale.profit = newProfit;
+    updateSalesTable(); updateSummary();
     closeEditModal();
-    alert("✅ Sale updated successfully!");
-  } catch(error){
-    alert("❌ Error: " + error.message);
-  }
-};
-function updateProductHistoryTable(){
-  let t = productHistoryTable;
-  t.innerHTML = "";
-  products.forEach((p, index) => {
-    let r = t.insertRow();
-    r.insertCell(0).innerText = p.name;
-    r.insertCell(1).innerText = p.cost;
-    r.insertCell(2).innerText = p.qty;
-    
-    // Edit বাটন
-    let actionCell = r.insertCell(3);
-    
-    let editBtn = document.createElement("button");
-    editBtn.innerText = "✏️ Edit";
-    editBtn.className = "edit-btn";
-    editBtn.onclick = () => editProduct(p, index);
-    actionCell.appendChild(editBtn);
-  });
-}
-
-// ====== UPDATE SALES TABLE ======
-function updateSalesTable(){
-  let t = salesTableBody;
-  t.innerHTML = "";
-  salesList.slice().reverse().forEach((s, index) => {
-    let r = t.insertRow();
-    r.insertCell(0).innerText = s.customerName;
-    r.insertCell(1).innerText = s.productName;
-    r.insertCell(2).innerText = s.sellPrice;
-    r.insertCell(3).innerText = s.profit;
-    r.insertCell(4).innerText = s.dateTime;
-    
-    // শুধু Edit বাটন
-    let actionCell = r.insertCell(5);
-    
-    let editBtn = document.createElement("button");
-    editBtn.innerText = "✏️ Edit";
-    editBtn.className = "edit-btn";
-    editBtn.onclick = () => editSale(s, index);
-    actionCell.appendChild(editBtn);
-  });
-}
-
-// ====== UPDATE SUMMARY ======
-function updateSummary(){
-  investment.innerText = totalInvestment;
-  sales.innerText = totalSales;
-  profit.innerText = totalProfit;
-  stockValue.innerText = products.reduce((a,b) => a + (b.cost * b.qty), 0);
-}
-
-// ====== STATUS MESSAGE ======
-function showStatus(elementId, message, type){
-  const statusEl = document.getElementById(elementId);
-  statusEl.innerText = message;
-  statusEl.className = "status-msg show status-" + type;
-  
-  if(type !== "loading"){
-    setTimeout(() => {
-      statusEl.innerText = "";
-      statusEl.className = "status-msg";
-    }, 3000);
-  }
-}
-
-// ====== ADD PRODUCT (FIREBASE) ======
-window.addProduct = async function(){
-  let n = productName.value.trim();
-  let c = Number(costPrice.value);
-  let q = Number(quantity.value);
-
-  if(!n || c <= 0 || q <= 0) {
-    showStatus("productStatus", "❌ Invalid input", "error");
-    return;
-  }
-
-  try {
-    showStatus("productStatus", "⏳ Saving...", "loading");
-
-    let investAmount = c * q;
-
-    // Firebase এ save করা
-    await addDoc(collection(db, "products"), {
-      name: n,
-      cost: c,
-      qty: q,
-      investedAmount: investAmount,
-      createdAt: new Date().toLocaleString()
-    });
-
-    // Local array update
-    let ex = products.find(p => p.name.toLowerCase() === n.toLowerCase());
-    if(ex){
-      ex.qty += q;
-      ex.investedAmount = (ex.investedAmount || 0) + investAmount;
-    } else {
-      products.push({
-        id: Date.now(),
-        name: n,
-        cost: c,
-        qty: q,
-        investedAmount: investAmount
-      });
-    }
-
-    totalInvestment += investAmount;
-
-    updateProductHistoryTable();
-    updateSummary();
-
-    productName.value = "";
-    costPrice.value = "";
-    quantity.value = "";
-
-    showStatus("productStatus", "✅ Product saved online!", "success");
-  } catch(error){
-    showStatus("productStatus", "❌ Error: " + error.message, "error");
-  }
+    alert("Sale updated");
+  } catch(e){ alert(e.message); }
 };
 
-// ====== ADD SALE (FIREBASE) ======
-window.addSale = async function(){
-  let cn = customerName.value.trim();
-  let n = saleProduct.value.trim();
-  let p = Number(sellPrice.value);
-  let q = 1;
+window.deleteSale = async function(sale){
+  if(!confirm("Delete this sale?")) return;
+  try{
+    await deleteDoc(doc(db,"sales",sale.firebaseId));
+    const product = products.find(p => p.name === sale.productName);
+    if(product){ product.qty += 1; await updateDoc(doc(db,"products",product.firebaseId),{ qty: product.qty }); }
+    totalSales -= sale.sellPrice;
+    totalProfit -= sale.profit;
+    salesList = salesList.filter(s => s.firebaseId !== sale.firebaseId);
+    updateSalesTable(); updateSummary();
+    alert("Sale deleted + stock restored");
+  } catch(e){ alert(e.message); }
+};
 
-  if(!cn) {
-    showStatus("saleStatus", "❌ Customer name required", "error");
-    return;
-  }
+window.addOrder = async function(){
+  const cust = document.getElementById("orderCustomer").value.trim();
+  const prod = document.getElementById("orderProduct").value.trim();
+  const price = Number(document.getElementById("orderPrice").value);
+  if(!cust || !prod || price<=0){ showStatus("orderStatus","❌ Fill correctly","error"); return; }
+  try{
+    const docRef = await addDoc(collection(db,"orders"),{ customerName:cust, productName:prod, price, dateTime: new Date().toLocaleString() });
+    ordersList.push({ firebaseId:docRef.id, customerName:cust, productName:prod, price, dateTime: new Date().toLocaleString() });
+    updateOrderTable();
+    document.getElementById("orderCustomer").value = ""; document.getElementById("orderProduct").value = ""; document.getElementById("orderPrice").value = "";
+    showStatus("orderStatus","✅ Order added","success");
+  } catch(e){ showStatus("orderStatus","Error: "+e.message,"error"); }
+};
 
-  let pr = products.find(x => x.name.toLowerCase() === n.toLowerCase());
-  if(!pr || pr.qty < q) {
-    showStatus("saleStatus", "❌ Stock issue", "error");
-    return;
-  }
+window.deliverOrder = async function(order){
+  const product = products.find(p => p.name.toLowerCase() === order.productName.toLowerCase());
+  if(!product || product.qty < 1){ alert("❌ Stock issue, cannot deliver"); return; }
+  try{
+    await deleteDoc(doc(db,"orders",order.firebaseId));
+    const profitVal = order.price - product.cost;
+    const saleRef = await addDoc(collection(db,"sales"),{ customerName:order.customerName, productName:product.name, sellPrice:order.price, profit:profitVal, dateTime: new Date().toLocaleString() });
+    product.qty -= 1;
+    await updateDoc(doc(db,"products",product.firebaseId),{ qty: product.qty });
+    salesList.push({ firebaseId:saleRef.id, customerName:order.customerName, productName:product.name, sellPrice:order.price, profit:profitVal, dateTime: new Date().toLocaleString() });
+    totalSales += order.price;
+    totalProfit += profitVal;
+    ordersList = ordersList.filter(o => o.firebaseId !== order.firebaseId);
+    updateOrderTable(); updateSalesTable(); updateSummary();
+    alert("✅ Order delivered and added to sales");
+  } catch(e){ alert("Error: "+e.message); }
+};
 
-  try {
-    showStatus("saleStatus", "⏳ Saving...", "loading");
+let currentEditOrder = null;
+window.editOrder = function(order){ currentEditOrder = order; document.getElementById("editOrderCustomer").value = order.customerName; document.getElementById("editOrderProduct").value = order.productName; document.getElementById("editOrderPrice").value = order.price; document.getElementById("editOrderModal").classList.add("show"); };
+window.closeEditOrderModal = function(){ document.getElementById("editOrderModal").classList.remove("show"); currentEditOrder = null; };
+window.saveOrderChanges = async function(){
+  if(!currentEditOrder) return;
+  const newCust = document.getElementById("editOrderCustomer").value.trim();
+  const newProd = document.getElementById("editOrderProduct").value.trim();
+  const newPrice = Number(document.getElementById("editOrderPrice").value);
+  if(!newCust || !newProd || newPrice<=0){ alert("Invalid"); return; }
+  try{
+    await updateDoc(doc(db,"orders",currentEditOrder.firebaseId),{ customerName:newCust, productName:newProd, price:newPrice });
+    currentEditOrder.customerName = newCust; currentEditOrder.productName = newProd; currentEditOrder.price = newPrice;
+    updateOrderTable();
+    closeEditOrderModal();
+    alert("Order updated");
+  } catch(e){ alert(e.message); }
+};
 
-    let profitAmount = (p - pr.cost) * q;
-
-    // Firebase এ sale save করা
-    await addDoc(collection(db, "sales"), {
-      customerName: cn,
-      productName: pr.name,
-      sellPrice: p,
-      profit: profitAmount,
-      dateTime: new Date().toLocaleString()
-    });
-
-    // Firebase এ প্রোডাক্ট স্টক আপডেট করা
-    const productQuery = query(collection(db, "products"), where("name", "==", pr.name));
-    const productSnap = await getDocs(productQuery);
-    
-    productSnap.forEach(async (docSnap) => {
-      await updateDoc(doc(db, "products", docSnap.id), {
-        qty: docSnap.data().qty - q
-      });
-    });
-
-    // Local update - Investment টাচ করছি না!
-    pr.qty -= q;
-    totalSales += p * q;
-    totalProfit += profitAmount;
-    // totalInvestment কোনোভাবেই পরিবর্তন হবে না
-
-    salesList.push({
-      customerName: cn,
-      productName: pr.name,
-      sellPrice: p,
-      profit: profitAmount,
-      dateTime: new Date().toLocaleString()
-    });
-
-    updateSalesTable();
-    updateSummary();
-
-    customerName.value = "";
-    saleProduct.value = "";
-    sellPrice.value = "";
-
-    showStatus("saleStatus", "✅ Sale saved online!", "success");
-  } catch(error){
-    showStatus("saleStatus", "❌ Error: " + error.message, "error");
-  }
+window.deleteOrder = async function(order){
+  if(!confirm("Delete order?")) return;
+  try{
+    await deleteDoc(doc(db,"orders",order.firebaseId));
+    ordersList = ordersList.filter(o => o.firebaseId !== order.firebaseId);
+    updateOrderTable();
+    alert("Order deleted");
+  } catch(e){ alert(e.message); }
 };
 
 window.resetAllData = async function(){
-  let pass = prompt("Reset Password");
+  const pass = prompt("Reset Password");
   if(pass !== RESET_PASSWORD) return;
-
-  try {
-    const prodSnap = await getDocs(collection(db, "products"));
-    prodSnap.forEach(d => deleteDoc(d.ref));
-
-    const salesSnap = await getDocs(collection(db, "sales"));
-    salesSnap.forEach(d => deleteDoc(d.ref));
-
-    products = [];
-    salesList = [];
-    totalSales = 0;
-    totalProfit = 0;
-    totalInvestment = 0;
-
-    updateProductHistoryTable();
-    updateSalesTable();
-    updateSummary();
-
-    alert("✅ Full Reset Done (Firebase + Local)");
-  } catch(error){
-    alert("❌ Error: " + error.message);
-  }
+  try{
+    const prodSnap = await getDocs(collection(db,"products")); prodSnap.forEach(d => deleteDoc(d.ref));
+    const salesSnap = await getDocs(collection(db,"sales")); salesSnap.forEach(d => deleteDoc(d.ref));
+    const ordersSnap = await getDocs(collection(db,"orders")); ordersSnap.forEach(d => deleteDoc(d.ref));
+    products = []; salesList = []; ordersList = []; totalSales = 0; totalProfit = 0; totalInvestment = 0;
+    updateProductHistoryTable(); updateSalesTable(); updateOrderTable(); updateSummary();
+    alert("✅ Full Reset Done");
+  } catch(e){ alert("Error: "+e.message); }
 };
 
-// ====== LOAD DATA FROM FIREBASE ======
 async function loadDataFromFirebase(){
-  try {
-    // Load Products
-    const productsSnapshot = await getDocs(collection(db, "products"));
-    products = [];
-    totalInvestment = 0;
-
-    productsSnapshot.forEach((doc) => {
-      const data = doc.data();
-      products.push({
-        id: doc.id,
-        name: data.name,
-        cost: data.cost,
-        qty: data.qty,
-        investedAmount: data.investedAmount || (data.cost * data.qty)
-      });
-      totalInvestment += data.investedAmount || (data.cost * data.qty);
+  try{
+    const prodSnap = await getDocs(collection(db,"products"));
+    products = []; totalInvestment = 0;
+    prodSnap.forEach(docSnap => {
+      const d = docSnap.data();
+      const inv = d.investedAmount || (d.cost * d.qty);
+      products.push({ firebaseId: docSnap.id, name: d.name, cost: d.cost, qty: d.qty, investedAmount: inv });
+      totalInvestment += inv;
     });
-
-    // Load Sales
-    const salesSnapshot = await getDocs(collection(db, "sales"));
-    salesList = [];
-    totalSales = 0;
-    totalProfit = 0;
-
-    salesSnapshot.forEach((doc) => {
-      const data = doc.data();
-      salesList.push({
-        id: doc.id,
-        customerName: data.customerName,
-        productName: data.productName,
-        sellPrice: data.sellPrice,
-        profit: data.profit,
-        dateTime: data.dateTime
-      });
-      totalSales += data.sellPrice;
-      totalProfit += data.profit;
+    const salesSnap = await getDocs(collection(db,"sales"));
+    salesList = []; totalSales = 0; totalProfit = 0;
+    salesSnap.forEach(docSnap => {
+      const d = docSnap.data();
+      salesList.push({ firebaseId: docSnap.id, customerName: d.customerName, productName: d.productName, sellPrice: d.sellPrice, profit: d.profit, dateTime: d.dateTime });
+      totalSales += d.sellPrice; totalProfit += d.profit;
     });
-
-    updateSalesTable();
-    updateSummary();
-    console.log("✅ Data loaded from Firebase");
-  } catch(error){
-    console.error("❌ Error loading data:", error);
-  }
+    const ordersSnap = await getDocs(collection(db,"orders"));
+    ordersList = [];
+    ordersSnap.forEach(docSnap => {
+      const d = docSnap.data();
+      ordersList.push({ firebaseId: docSnap.id, customerName: d.customerName, productName: d.productName, price: d.price, dateTime: d.dateTime });
+    });
+    updateSalesTable(); updateOrderTable(); updateProductHistoryTable(); updateSummary();
+  } catch(e){ console.error(e); }
 }
 
-// ====== INIT ======
-window.init = async function(){
-  loadDarkModePreference();
-  await loadDataFromFirebase();
-  updateSalesTable();
-  updateSummary();
-};
+function showStatus(elId, msg, type){
+  const el = document.getElementById(elId);
+  if(!el) return;
+  el.innerText = msg;
+  el.className = `status-msg show status-${type}`;
+  setTimeout(() => { if(el) el.className = "status-msg"; }, 3000);
+}
 
+window.init = async function(){ loadDarkModePref(); await loadDataFromFirebase(); };
 init();
-
 </script>
-
 </body>
-</html>
+    </html>
